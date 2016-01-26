@@ -77,7 +77,7 @@
 	            });
 	             
 	            $.ajax({
-	                url: "SalestAdminConsole/api/file/upload",
+	                url: "SalestAdminConsole/api/upload/tr_csv",
 	                type: 'POST',
 	                contentType: false,
 	                data: formData,
@@ -92,7 +92,7 @@
 	        
 	        $('#extractFromSeqFileBtn').click(function() {
 	            $.ajax({
-	                url: "SalestAdminConsole/api/rawdata/aggByDaily",
+	                url: "SalestAdminConsole/api/rawdata/agg_tr_daily",
 	                type: 'POST',
 	                contentType: false,
 	                processData: false,

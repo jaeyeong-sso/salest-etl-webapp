@@ -18,7 +18,7 @@
 	</hdp:configuration>
      
      <!-- pre-action="cleanup-script" post-action="export-results" -->
-	<hdp:job-runner id="daily-tr-agg-job-runner" pre-action="cleanup-script" job-ref="daily-tr-agg-job" run-at-startup="true"/>
+	<hdp:job-runner id="daily-tr-agg-job-runner" pre-action="cleanup-script" job-ref="daily-tr-agg-job" run-at-startup="false"/>
 
 	<hdp:script id="cleanup-script" location="classpath:clean-files.groovy">
 		<hdp:property name="targetDir" value="${daily_tr_agg.output.path}"/>

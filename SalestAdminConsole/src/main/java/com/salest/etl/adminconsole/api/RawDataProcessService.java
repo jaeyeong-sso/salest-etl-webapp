@@ -18,7 +18,7 @@ public class RawDataProcessService {
 	//private HDFSService hdfsService;
 
 	@GET
-	@Path("/aggByDaily")
+	@Path("/agg_tr_daily")
 	public Response test() {
 		
 		return Response.status(Response.Status.OK).entity("TEST OK").build();
@@ -26,7 +26,7 @@ public class RawDataProcessService {
 	
 	
 	@POST
-	@Path("/aggByDaily")
+	@Path("/agg_tr_daily")
 	public Response execAggTrData() {
 		
 		return Response.status(Response.Status.OK).build();
