@@ -3,17 +3,29 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:hadoop="http://www.springframework.org/schema/hadoop"
 	xmlns:hdp="http://www.springframework.org/schema/hadoop"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd">
-     
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/hadoop
+		http://www.springframework.org/schema/hadoop/spring-hadoop.xsd">
+
+	<context:property-placeholder location="classpath:hadoop.properties"/>
+	
 	<hdp:configuration>
-		fs.defaultFS=hdfs://local-hadoop-namenode:9000
+		fs.defaultFS=${hd.fs}
 	</hdp:configuration>
      
      <!-- pre-action="cleanup-script" post-action="export-results" -->
-	<hdp:job-runner id="daily-tr-agg-job-runner" job-ref="daily-tr-agg-job" run-at-startup="true"/>
+	<hdp:job-runner id="daily-tr-agg-job-runner" pre-action="cleanup-script" job-ref="daily-tr-agg-job" run-at-startup="true"/>
 
-	<hdp:job id="daily-tr-agg-job"  input-path="/salest/raw_data/transaction_receipt.data" output-path="/salest/raw_data/mapreduce_result_00"
+	<hdp:script id="cleanup-script" location="classpath:clean-files.groovy">
+		<hdp:property name="targetDir" value="${daily_tr_agg.output.path}"/>
+	</hdp:script>
+	
+	<hdp:job id="daily-tr-agg-job"
+		input-path="${daily_tr_agg.input.path}" output-path="${daily_tr_agg.output.path}"
 		mapper="com.salest.etl.adminconsole.hadoop.TrReceiptDailyAggMapper"
 		reducer="com.salest.etl.adminconsole.hadoop.TrReceiptDailyAggReducer" />
 		
