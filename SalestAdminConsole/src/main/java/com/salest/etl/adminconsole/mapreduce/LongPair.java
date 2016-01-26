@@ -1,4 +1,4 @@
-package com.salest.etl.adminconsole.hadoop;
+package com.salest.etl.adminconsole.mapreduce;
 
 import java.io.DataInput;
 import java.io.DataOutput;

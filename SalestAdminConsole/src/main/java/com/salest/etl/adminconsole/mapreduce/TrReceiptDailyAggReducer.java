@@ -1,4 +1,4 @@
-package com.salest.etl.adminconsole.hadoop;
+package com.salest.etl.adminconsole.mapreduce;
 
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.io.Text;
