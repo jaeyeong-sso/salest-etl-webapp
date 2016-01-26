@@ -7,6 +7,7 @@ import javax.ws.rs.core.Response;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.hadoop.mapreduce.JobRunner;
 import org.springframework.stereotype.Component;
 
 
@@ -14,8 +15,11 @@ import org.springframework.stereotype.Component;
 @Path("/rawdata")
 public class RawDataProcessService {
 	
-	//@Autowired
-	//private HDFSService hdfsService;
+	@Autowired
+	private org.apache.hadoop.conf.Configuration hdConf;
+
+	@Autowired
+	private JobRunner dailyTrAggJobRunner;
 
 	@GET
 	@Path("/agg_tr_daily")
@@ -29,7 +33,17 @@ public class RawDataProcessService {
 	@Path("/agg_tr_daily")
 	public Response execAggTrData() {
 		
-		return Response.status(Response.Status.OK).build();
+		try {
+			
+			dailyTrAggJobRunner.call();
+			return Response.status(Response.Status.OK).build();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		
 		/*
 		if( hdfsService.executeMapReduceAggTransactionPerDaily()){

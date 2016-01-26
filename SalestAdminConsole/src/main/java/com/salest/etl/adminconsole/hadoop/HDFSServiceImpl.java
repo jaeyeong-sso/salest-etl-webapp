@@ -11,12 +11,12 @@ import org.apache.hadoop.fs.FileSystem;
 
 public class HDFSServiceImpl implements HDFSService {
 
-	private String HDFS_CONF_FS_DEFAULT_NAME;
+	private String HDFS_CONF_FS_DEFAULT_NAME = "hdfs://local-hadoop-namenode:9000";
 	
 	private Configuration conf;
 	private FileSystem hdfs;
 	
-	public HDFSServiceImpl(){		
+	public HDFSServiceImpl(){
 		conf = new Configuration();
 	    conf.set("fs.default.name", HDFS_CONF_FS_DEFAULT_NAME);
 	    conf.set("ipc.client.connect.timeout", "30000");

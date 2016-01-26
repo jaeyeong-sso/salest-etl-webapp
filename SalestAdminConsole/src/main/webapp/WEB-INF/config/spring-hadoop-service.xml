@@ -18,7 +18,7 @@
 	</hdp:configuration>
      
      <!-- pre-action="cleanup-script" post-action="export-results" -->
-	<hdp:job-runner id="daily-tr-agg-job-runner" pre-action="cleanup-script" job-ref="daily-tr-agg-job" run-at-startup="false"/>
+	<hdp:job-runner id="dailyTrAggJobRunner" pre-action="cleanup-script" job-ref="daily-tr-agg-job" run-at-startup="false"/>
 
 	<hdp:script id="cleanup-script" location="classpath:clean-files.groovy">
 		<hdp:property name="targetDir" value="${daily_tr_agg.output.path}"/>
@@ -26,7 +26,7 @@
 	
 	<hdp:job id="daily-tr-agg-job"
 		input-path="${daily_tr_agg.input.path}" output-path="${daily_tr_agg.output.path}"
-		mapper="com.salest.etl.adminconsole.hadoop.TrReceiptDailyAggMapper"
-		reducer="com.salest.etl.adminconsole.hadoop.TrReceiptDailyAggReducer" />
+		mapper="com.salest.etl.adminconsole.mapreduce.TrReceiptDailyAggMapper"
+		reducer="com.salest.etl.adminconsole.mapreduce.TrReceiptDailyAggReducer" />
 		
 </beans>
