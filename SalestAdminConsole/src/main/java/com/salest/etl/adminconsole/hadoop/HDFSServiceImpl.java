@@ -33,7 +33,7 @@ public class HDFSServiceImpl implements HDFSService {
 			if (hdfs.exists(trReceiptFilePath)) {
 				bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.append(trReceiptFilePath)));
 			} else {
-				bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.create(trReceiptFilePath, true)));
+				bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.create(trReceiptFilePath, (short)1)));
 			}
 			IOUtils.copy(fileInputStream, bufWriter);
 			bufWriter.close();

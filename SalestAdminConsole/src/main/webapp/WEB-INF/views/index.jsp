@@ -71,6 +71,8 @@
 	    $(document).ready(function() {
 	        $('#uploadBtn').click(function() {
 
+	        	alert('uploadBtn');
+	        	
 	            var formData = new FormData();
 	            $.each($('#attachFile')[0].files, function(i, file) {          
 	            	formData.append('file', file);
@@ -294,8 +296,9 @@
     
     
     <!-- jQuery -->
+    <!--
     <script src="/static/bower_components/jquery/dist/jquery.min.js"></script>
-
+	-->
     <!-- Bootstrap Core JavaScript -->
     <script src="/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
