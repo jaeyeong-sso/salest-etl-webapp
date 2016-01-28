@@ -71,8 +71,6 @@
 	    $(document).ready(function() {
 	        $('#uploadBtn').click(function() {
 
-	        	alert('uploadBtn');
-	        	
 	            var formData = new FormData();
 	            $.each($('#attachFile')[0].files, function(i, file) {          
 	            	formData.append('file', file);
