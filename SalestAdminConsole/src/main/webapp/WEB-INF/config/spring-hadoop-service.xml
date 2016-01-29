@@ -11,7 +11,7 @@
 		http://www.springframework.org/schema/hadoop
 		http://www.springframework.org/schema/hadoop/spring-hadoop.xsd">
 
-	<context:property-placeholder location="classpath:hadoop.properties"/>
+	<context:property-placeholder location="classpath:properties/hadoop.properties"/>
 	
 	<hdp:configuration>
 		fs.defaultFS=${hd.fs}

@@ -1,5 +1,7 @@
 package com.salest.etl.adminconsole.api;
 
+import java.util.Date;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -7,8 +9,12 @@ import javax.ws.rs.core.Response;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.hadoop.mapreduce.JobRunner;
 import org.springframework.stereotype.Component;
+
+import com.salest.etl.adminconsole.dao.DailyTrSummaryDAO;
+import com.salest.etl.adminconsole.model.DailyTrSummary;
 
 
 @Component
@@ -20,7 +26,11 @@ public class RawDataProcessService {
 
 	@Autowired
 	private JobRunner dailyTrAggJobRunner;
+	
+	//@Autowired
+	//private DailyTrSummaryDAO dailyTrSummaryDAO;
 
+	
 	@GET
 	@Path("/agg_tr_daily")
 	public Response test() {
@@ -35,24 +45,30 @@ public class RawDataProcessService {
 		
 		try {
 			
-			dailyTrAggJobRunner.call();
-			return Response.status(Response.Status.OK).build();
+			//dailyTrAggJobRunner.call();
+			//return Response.status(Response.Status.OK).build();
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		//
+		
+		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("Hibernate.xml");
+		
+		DailyTrSummaryDAO daoObj = context.getBean(DailyTrSummaryDAO.class);
+         
+		DailyTrSummary item = new DailyTrSummary();
+		item.setDate(new Date());
+		item.setNumOfOrder((byte)99);
+		item.setTotalAmount((long)25600);
+		daoObj.save(item);
+	     
+		context.close();    
+		
+		//
+		
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		
-		/*
-		if( hdfsService.executeMapReduceAggTransactionPerDaily()){
-			return Response.status(Response.Status.OK).build();
-		} else {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-		*/
-		
-
 	}
 }

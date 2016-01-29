@@ -11,7 +11,11 @@
  
   <context-param>
 	<param-name>contextConfigLocation</param-name>
-	<param-value>/WEB-INF/config/spring-service.xml,/WEB-INF/config/spring-hadoop-service.xml</param-value>
+	<param-value>
+		/WEB-INF/config/spring-service.xml,
+		/WEB-INF/config/spring-hadoop-service.xml,
+		/WEB-INF/config/Hibernate.xml
+	</param-value>
   </context-param>
   
 
