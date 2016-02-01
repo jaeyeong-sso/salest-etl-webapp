@@ -8,21 +8,30 @@
 	
 	<import resource="spring-hadoop-service.xml" />
 
-	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean"/>
 	<bean id="transactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
-	<bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher" p:jobRepository-ref="jobRepository"/>
 	
+	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+	</bean>
+	
+	<bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+		<property name="jobRepository" ref="jobRepository"/>
+	</bean>
+	
+	<bean class="org.springframework.batch.core.scope.StepScope">
+        <property name="proxyTargetClass" value="true"/>
+    </bean>
+    
 	<batch:job id="testJob">
-	<!--
-		<batch:step id="mrjob">
-	      <batch:tasklet ref="mrjob-tasklet"/>
-	    </batch:step>
-	-->
-	
-		<batch:step id="cleanup" next="setup">
+
+		<batch:step id="cleanup" next="mrjob">
 	      <batch:tasklet ref="cleanup-tasklet"/>
 	    </batch:step>
-
+	    
+		<batch:step id="mrjob" next="setup">
+	      <batch:tasklet ref="mrjob-tasklet"/>
+	    </batch:step>
+		
 	    <batch:step id="setup">
 	       <batch:tasklet ref="setup-tasklet" />
 	    </batch:step>

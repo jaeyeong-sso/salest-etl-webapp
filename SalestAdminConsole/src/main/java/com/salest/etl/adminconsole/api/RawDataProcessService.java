@@ -24,10 +24,12 @@ import com.salest.etl.adminconsole.model.DailyTrSummary;
 @Path("/rawdata")
 public class RawDataProcessService {
 	
-	//@Autowired
-	//private org.apache.hadoop.conf.Configuration hdConf;
-	//@Autowired
-	//private JobRunner dailyTrAggJobRunner;
+	/*
+	@Autowired
+	private org.apache.hadoop.conf.Configuration hdConf;
+	@Autowired
+	private JobRunner dailyTrAggJobRunner;
+	*/
 	
 	@Autowired
 	JobLauncher jobLauncher;
@@ -53,7 +55,7 @@ public class RawDataProcessService {
 	public Response execAggTrData() {
 		
 		try {
-			
+	
 			JobExecution jobExe = jobLauncher.run(testJob, new JobParameters());
 		
 			if(jobExe!=null){
@@ -62,7 +64,7 @@ public class RawDataProcessService {
 					
 				}
 			}
-			
+		
 			//dailyTrAggJobRunner.call();
 			//return Response.status(Response.Status.OK).build();
 			
