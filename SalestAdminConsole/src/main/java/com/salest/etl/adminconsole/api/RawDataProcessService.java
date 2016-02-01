@@ -7,7 +7,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.hadoop.mapreduce.JobRunner;
@@ -21,12 +24,18 @@ import com.salest.etl.adminconsole.model.DailyTrSummary;
 @Path("/rawdata")
 public class RawDataProcessService {
 	
+	//@Autowired
+	//private org.apache.hadoop.conf.Configuration hdConf;
+	//@Autowired
+	//private JobRunner dailyTrAggJobRunner;
+	
 	@Autowired
-	private org.apache.hadoop.conf.Configuration hdConf;
+	JobLauncher jobLauncher;
 
 	@Autowired
-	private JobRunner dailyTrAggJobRunner;
-	
+	Job testJob;
+
+	    
 	//@Autowired
 	//private DailyTrSummaryDAO dailyTrSummaryDAO;
 
@@ -45,6 +54,15 @@ public class RawDataProcessService {
 		
 		try {
 			
+			JobExecution jobExe = jobLauncher.run(testJob, new JobParameters());
+		
+			if(jobExe!=null){
+				Date createTime = jobExe.getCreateTime();
+				if(createTime!=null){
+					
+				}
+			}
+			
 			//dailyTrAggJobRunner.call();
 			//return Response.status(Response.Status.OK).build();
 			
@@ -52,9 +70,8 @@ public class RawDataProcessService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		//
-		
+
+/*		
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("Hibernate.xml");
 		
 		DailyTrSummaryDAO daoObj = context.getBean(DailyTrSummaryDAO.class);
@@ -66,8 +83,7 @@ public class RawDataProcessService {
 		daoObj.save(item);
 	     
 		context.close();    
-		
-		//
+*/		
 		
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 	}

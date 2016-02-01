@@ -16,6 +16,6 @@
 		</property>
     </bean>
     
-    <bean id="hdfsService" class="com.salest.etl.adminconsole.hadoop.HDFSServiceImpl"/>
+    <bean id="hdfsService" class="com.salest.etl.adminconsole.hdfs.HDFSServiceImpl"/>
 
 </beans>

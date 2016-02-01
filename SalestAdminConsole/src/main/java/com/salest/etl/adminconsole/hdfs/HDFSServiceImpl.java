@@ -1,4 +1,4 @@
-package com.salest.etl.adminconsole.hadoop;
+package com.salest.etl.adminconsole.hdfs;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/batch	http://www.springframework.org/schema/batch/spring-batch.xsd">
+	
+	<import resource="spring-hadoop-service.xml" />
+
+	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean"/>
+	<bean id="transactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+	<bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher" p:jobRepository-ref="jobRepository"/>
+	
+	<batch:job id="testJob">
+	<!--
+		<batch:step id="mrjob">
+	      <batch:tasklet ref="mrjob-tasklet"/>
+	    </batch:step>
+	-->
+	
+		<batch:step id="cleanup" next="setup">
+	      <batch:tasklet ref="cleanup-tasklet"/>
+	    </batch:step>
+
+	    <batch:step id="setup">
+	       <batch:tasklet ref="setup-tasklet" />
+	    </batch:step>
+
+	</batch:job>
+	
+</beans>
