@@ -32,8 +32,8 @@ public class DailyTrSummary  {
 	public byte getNumOfOrder(){
 		return num_of_order;
 	}
-	public void setNumOfOrder(byte numOfOrder){
-		this.num_of_order = numOfOrder;
+	public void setNumOfOrder(byte num_of_order){
+		this.num_of_order = num_of_order;
 	}
 	
 	public long getTotalAmount(){

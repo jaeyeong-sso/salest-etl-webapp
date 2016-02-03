@@ -4,6 +4,7 @@
 	xmlns:hadoop="http://www.springframework.org/schema/hadoop"
 	xmlns:hdp="http://www.springframework.org/schema/hadoop"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context
@@ -34,7 +35,7 @@
 
     <hdp:job-tasklet id="mrjob-tasklet" job-ref="daily-tr-agg-job" scope="step"/>
 
-	<hdp:job id="daily-tr-agg-job" scope="step"
+	<hdp:job id="daily-tr-agg-job"
 		input-path="${daily_tr_agg.input.path}" output-path="${daily_tr_agg.output.path}"
 		mapper="com.salest.etl.adminconsole.mapreduce.TrReceiptDailyAggMapper"
 		reducer="com.salest.etl.adminconsole.mapreduce.TrReceiptDailyAggReducer" />
@@ -44,5 +45,11 @@
 	   		<hdp:property name="targetDir" value="${daily_tr_agg.output.path}"/>
 	   	</hdp:script>
     </hdp:script-tasklet>
+    
+    
+    <hdp:resource-loader id="hadoopResourceLoader" />	
+
+	<bean id="defaultResourceLoaders" class="org.springframework.data.hadoop.fs.CustomResourceLoaderRegistrar" p:loader-ref="hadoopResourceLoader" />
+	
     
 </beans>

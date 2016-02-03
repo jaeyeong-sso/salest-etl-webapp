@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -58,13 +59,16 @@ public class RawDataProcessService {
 	
 			JobExecution jobExe = jobLauncher.run(testJob, new JobParameters());
 		
+			/*
 			if(jobExe!=null){
 				Date createTime = jobExe.getCreateTime();
 				if(createTime!=null){
 					
 				}
 			}
+			*/
 		
+
 			//dailyTrAggJobRunner.call();
 			//return Response.status(Response.Status.OK).build();
 			
