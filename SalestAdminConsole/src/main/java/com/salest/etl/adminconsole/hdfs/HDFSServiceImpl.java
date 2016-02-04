@@ -1,13 +1,17 @@
 package com.salest.etl.adminconsole.hdfs;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.hdfs.tools.DFSAdmin;
+
 
 public class HDFSServiceImpl implements HDFSService {
 
@@ -43,6 +47,33 @@ public class HDFSServiceImpl implements HDFSService {
 	    catch (IOException e){
 	      e.printStackTrace();
 	    }
-	  }
+	 }
+	
+	 public void getHDFSClusterStatus(){
+		 
+		 DFSAdmin dfsAdmin = new DFSAdmin(conf);
+		 String [] args =  new String[]{"Name","DFS Remaining"};
+		 try {
+			 
+			ByteArrayOutputStream pipeOut = new ByteArrayOutputStream();
+			
+			PrintStream old_out = System.out;
+			System.setOut(new PrintStream(pipeOut));
+
+			dfsAdmin.report(args, 0);
+
+			System.setOut(old_out);
+			String output = new String(pipeOut.toByteArray());
+			
+			if(output!=null){
+				System.out.println(output);
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	 }
 	
 }

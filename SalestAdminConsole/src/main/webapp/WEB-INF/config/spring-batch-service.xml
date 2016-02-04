@@ -34,7 +34,7 @@
         <property name="proxyTargetClass" value="true"/>
     </bean>
   
-	<batch:job id="testJob">
+	<batch:job id="dailyAggBatchJob">
 	
 		<batch:step id="cleanup" next="mrjob">
 			<batch:tasklet ref="cleanup-tasklet"/>

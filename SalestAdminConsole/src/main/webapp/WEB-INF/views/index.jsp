@@ -83,7 +83,7 @@
 	                data: formData,
 	                processData: false,
 	                success: function(data, textStatus, jqXHR) {
-	                	alert('Success');
+	                	//alert('Success');
 	                }, error: function(jqXHR, textStatus, errorThrown) {
 	                	alert('Failed');
 	                }
@@ -97,7 +97,7 @@
 	                contentType: false,
 	                processData: false,
 	                success: function(data, textStatus, jqXHR) {
-	                		alert('ajax ok');
+	                		//alert('ajax ok');
 		                }, error: function(jqXHR, textStatus, errorThrown) {
 		                	alert('ajax failed');
 		                }
@@ -199,6 +199,7 @@
             </div>
             <!-- /.row -->
             
+            <!--
             <div class="row">
             	<div class="col-lg-12">
 					<div class="panel panel-default">
@@ -214,13 +215,15 @@
 					</div>
 				</div>
             </div>
-              
+            --> 
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
+                
                     <div class="panel panel-default">
+                    
                         <div class="panel-heading">
-                            <i class="fa fa-upload fa-fw"></i> Upload Monthly Transaction File(CSV only)
+                            <i class="fa fa-upload fa-fw"></i> Upload CSV data file
 
                             <div class="pull-right">
 								<div class="btn-group">
@@ -236,9 +239,8 @@
 	                                </ul>
 								</div>
                             </div>
-                            
                         </div>
-                        <!-- /.panel-heading -->
+                        
 						<div class="panel-body">
 						
 							<form id="submitForm" enctype="multipart/form-data">
@@ -254,15 +256,37 @@
 									</span>
 								</div>
 							</form>
-<!--						
-							<form action="api/file/upload" method="post" enctype="multipart/form-data">
-								Select a file : 
-								<input type="file" name="file" size="50" />
-								<input type="submit" value="Upload It" />
-							</form>
--->						
+							
+							</p>
+							
+							<div class="panel panel-default">
+                        		<div class="panel-heading"> Batch Job </div>
+								<div class="panel-body">
+ 									<div class="table-responsive">
+										<table class="table table-striped table-bordered table-hover">
+		                                    <thead>
+		                                        <tr>
+		                                            <th>Job Name</th>
+		                                            <th>State</th>
+		                                            <th>Start Time</th>
+		                                            <th>End Time</th>
+		                                        </tr>
+		                                    </thead>
+		                                    <tbody>
+		                                        <tr>
+		                                            <td>mrJob</td>
+		                                            <td>COMPLETE</td>
+		                                            <td>2016/02/04 14:00:00</td>
+		                                            <td>2016/02/04 14:00:20</td>
+		                                        </tr>
+		                                    </tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+	
 						</div>
-                        <!-- /.panel-body -->
+
                     </div>
                 </div>
 
