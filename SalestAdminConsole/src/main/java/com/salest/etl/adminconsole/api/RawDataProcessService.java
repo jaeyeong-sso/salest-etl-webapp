@@ -1,5 +1,9 @@
 package com.salest.etl.adminconsole.api;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,9 +14,13 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.salest.etl.adminconsole.dao.DFSAdminReportDAO;
+import com.salest.etl.adminconsole.dao.DFSAdminReportDAOImpl;
 import com.salest.etl.adminconsole.hdfs.HDFSService;
+import com.salest.etl.adminconsole.model.DFSAdminReport;
 
 //import com.salest.etl.adminconsole.dao.DailyTrSummaryDAO;
 //import com.salest.etl.adminconsole.model.DailyTrSummary;
@@ -27,8 +35,8 @@ public class RawDataProcessService {
 	@Autowired
 	Job dailyAggBatchJob;
 	    
-	//@Autowired
-	//private DailyTrSummaryDAO dailyTrSummaryDAO;
+	@Autowired
+	DFSAdminReportDAO dfsAdminReportDAO;
 	
 	@Autowired
 	HDFSService hdfsService;
@@ -40,14 +48,25 @@ public class RawDataProcessService {
 		return Response.status(Response.Status.OK).entity("TEST OK").build();
 	}
 	
-	
 	@POST
 	@Path("/agg_tr_daily")
 	public Response execAggTrData() {
 		
 		try {
 	
-			hdfsService.getHDFSClusterStatus();
+			HashMap<String,String> dfsAdminInfoMap = hdfsService.reportHDFSClusterStatus();
+			
+			if(dfsAdminInfoMap!=null){
+						
+				DFSAdminReport obj = new DFSAdminReport();
+			
+				obj.setName(dfsAdminInfoMap.get("name"));
+				obj.setHostname(dfsAdminInfoMap.get("hostname"));
+				obj.setDfs_used(dfsAdminInfoMap.get("dfs_used"));
+				obj.setDfs_remaining(dfsAdminInfoMap.get("dfs_remaining"));
+				
+				dfsAdminReportDAO.update(obj);
+			}
 			
 			//JobExecution jobExe = jobLauncher.run(dailyAggBatchJob, new JobParameters());
 			//return Response.status(Response.Status.OK).build();

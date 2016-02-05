@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.util.HashMap;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -49,7 +50,7 @@ public class HDFSServiceImpl implements HDFSService {
 	    }
 	 }
 	
-	 public void getHDFSClusterStatus(){
+	 public HashMap<String,String> reportHDFSClusterStatus(){
 		 
 		 DFSAdmin dfsAdmin = new DFSAdmin(conf);
 		 String [] args =  new String[]{"Name","DFS Remaining"};
@@ -63,10 +64,10 @@ public class HDFSServiceImpl implements HDFSService {
 			dfsAdmin.report(args, 0);
 
 			System.setOut(old_out);
-			String output = new String(pipeOut.toByteArray());
+			String strReportOut = new String(pipeOut.toByteArray());
 			
-			if(output!=null){
-				System.out.println(output);
+			if(strReportOut!=null){
+				return parseStrReportResult(strReportOut);
 			}
 			
 		} catch (IOException e) {
@@ -74,6 +75,23 @@ public class HDFSServiceImpl implements HDFSService {
 			e.printStackTrace();
 		}
 	
+		return null;
+	 }
+	 
+	 private HashMap<String,String> parseStrReportResult(String strReportResult){
+		 HashMap<String,String> clsReportInfoMap = new HashMap<String,String>();
+		 
+		 String lines[] = strReportResult.split("\\r?\\n");
+		 
+		 for(String line : lines){
+			 String[] items = line.split(":",2);
+			 if(items.length > 1){
+				 clsReportInfoMap.put(items[0].trim().toLowerCase().replace(' ', '_'), 
+						 			  items[1].trim());
+			 }
+		 }
+			
+		 return clsReportInfoMap;
 	 }
 	
 }

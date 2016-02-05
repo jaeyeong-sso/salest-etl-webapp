@@ -4,6 +4,8 @@
 		xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
+	<import resource="data-source.xml" />
+		
 	<!-- Hibernate 3 Annotation SessionFactory Bean definition-->
     <bean id="hibernate3AnnotatedSessionFactory"
         class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
@@ -11,6 +13,7 @@
         <property name="annotatedClasses">
             <list>
                 <value>com.salest.etl.adminconsole.model.DailyTrSummary</value>
+                <value>com.salest.etl.adminconsole.model.DFSAdminReport</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -21,8 +24,13 @@
             </props>
         </property>
     </bean>
-     
+    
+    <!-- DAO --> 
     <bean id="dailyTrSummaryDAO" class="com.salest.etl.adminconsole.dao.DailyTrSummaryDAOImpl">
+        <property name="sessionFactory" ref="hibernate3AnnotatedSessionFactory" />
+    </bean>
+    
+    <bean id="dfsAdminReportDAO" class="com.salest.etl.adminconsole.dao.DFSAdminReportDAOImpl">
         <property name="sessionFactory" ref="hibernate3AnnotatedSessionFactory" />
     </bean>
     

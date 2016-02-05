@@ -12,10 +12,10 @@
   <context-param>
 	<param-name>contextConfigLocation</param-name>
 	<param-value>
+		/WEB-INF/config/data-source.xml,
+		/WEB-INF/config/hibernate.xml,
 		/WEB-INF/config/spring-service.xml,
-		/WEB-INF/config/data-source.xml
-		/WEB-INF/config/spring-batch-service.xml,
-		/WEB-INF/config/hibernate.xml
+		/WEB-INF/config/spring-batch-service.xml
 	</param-value>
   </context-param>
   
