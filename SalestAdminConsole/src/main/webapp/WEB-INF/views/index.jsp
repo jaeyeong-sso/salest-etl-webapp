@@ -33,14 +33,16 @@
     <!-- Custom Fonts -->
     <link href="/static/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-	
+
+    <!--
+    <script src="/static/js/flot-data.js"></script>
+	-->
 
 	<style type="text/css">
 		.btn-file {
@@ -67,7 +69,7 @@
 		}
 	</style>
 	
-		<script>
+	<script>
 	    $(document).ready(function() {
 	        $('#uploadBtn').click(function() {
 
@@ -143,6 +145,32 @@
 	    
 	</script>
 	
+	<script type="text/javascript">
+    
+		$(function() {
+    			
+		        var data = [{
+		            label: "Used",
+		            data: 99
+		        }, {
+		            label: "Remained",
+		            data: 1
+		        }];
+		        
+		        var plotObj = $.plot($("#flot-pie-chart"), data, {
+		            series: {
+		                pie: {
+		                    show: true
+		                }
+		            },
+		            grid: {
+		                hoverable: true
+		            }
+		        })
+		})
+		
+	</script>
+	
 </head>
 
 <body>
@@ -199,6 +227,18 @@
             </div>
             <!-- /.row -->
             
+			<div class="row">
+	            <div class="panel panel-default">
+					<div class="panel-heading">HDFS Cluster Status</div>
+					<!-- /.panel-heading -->
+					<div class="panel-body">
+						<div class="flot-chart">
+							<div class="flot-chart-content" id="flot-pie-chart" style="width: 300px; height: 300px"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+           
             <!--
             <div class="row">
             	<div class="col-lg-12">
@@ -331,9 +371,14 @@
     <script src="/static/bower_components/raphael/raphael-min.js"></script>
     <script src="/static/bower_components/morrisjs/morris.min.js"></script>
     <script src="/static/js/morris-data.js"></script>
-
+    
     <!-- Custom Theme JavaScript -->
     <script src="/static/dist/js/sb-admin-2.js"></script>
+    
+	<!-- Flot Charts JavaScript -->
+    <script src="/static/bower_components/flot/jquery.flot.js"></script>
+    <script src="/static/bower_components/flot/jquery.flot.pie.js"></script>
+    <script src="/static/bower_components/flot/jquery.flot.resize.js"></script>
     
 </body>
 
