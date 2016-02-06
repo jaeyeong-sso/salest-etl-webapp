@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -77,7 +79,7 @@
 	            });
 	             
 	            $.ajax({
-	                url: "SalestAdminConsole/api/upload/tr_csv",
+	                url: "/SalestAdminConsole/api/upload/tr_csv",
 	                type: 'POST',
 	                contentType: false,
 	                data: formData,
@@ -92,7 +94,7 @@
 	        
 	        $('#extractFromSeqFileBtn').click(function() {
 	            $.ajax({
-	                url: "SalestAdminConsole/api/rawdata/agg_tr_daily",
+	                url: "/SalestAdminConsole/api/rawdata/agg_tr_daily",
 	                type: 'POST',
 	                contentType: false,
 	                processData: false,
@@ -237,27 +239,33 @@
 	                        <div class="panel-heading"><i class="glyphicon glyphicon-align-left"></i> Node Information</div>
 	                        <div class="panel-body">
 	                        
-	                        
-								<div class="panel panel-green">
-									<div class="panel-heading">datanode-1</div>
-									<div class="panel-body">
-										<div class="list-group">
-											<a href="#" class="list-group-item">
-												<i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;&nbsp;Address
-												<span class="pull-right text-muted small"><em>192.168.118.130:50010 (192.168.118.130)</em></span>
-											</a>
-											<a href="#" class="list-group-item">
-												<i class="glyphicon glyphicon-folder-close"></i>&nbsp;&nbsp;&nbsp;Used
-												<span class="pull-right text-muted small"><em>126893 (123.92 KB)</em></span>
-											</a>
-											<a href="#" class="list-group-item">
-												<i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;&nbsp;Remaining
-												<span class="pull-right text-muted small"><em>6838005760 (6.37 GB)</em></span>
-											</a>
+	                        	<c:if test="${not empty NodeInfoItems}">
+
+									<c:forEach var="NodeInfo" items="${NodeInfoItems}">
+
+										<div class="panel panel-green">
+											<div class="panel-heading">${NodeInfo.name}</div>
+											<div class="panel-body">
+											<div class="list-group">
+												<a href="#" class="list-group-item">
+													<i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;&nbsp;Address
+													<span class="pull-right text-muted small"><em>${NodeInfo.hostname}</em></span>
+												</a>
+												<a href="#" class="list-group-item">
+													<i class="glyphicon glyphicon-folder-close"></i>&nbsp;&nbsp;&nbsp;Used
+													<span class="pull-right text-muted small"><em>${NodeInfo.dfs_used}</em></span>
+												</a>
+												<a href="#" class="list-group-item">
+													<i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;&nbsp;Remaining
+													<span class="pull-right text-muted small"><em>${NodeInfo.dfs_remaining}</em></span>
+												</a>
+											</div>
+											</div>
 										</div>
-									</div>
-								</div>
-								
+				
+									</c:forEach>
+
+								</c:if>				
 						</div>
 	
 					</div>

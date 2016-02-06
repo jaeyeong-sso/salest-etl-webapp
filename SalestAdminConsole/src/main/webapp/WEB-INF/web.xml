@@ -54,7 +54,7 @@
   <!-- welcome file list -->
   <!-- ============================================================= -->
   <welcome-file-list>
-    <welcome-file>/WEB-INF/views/dwhouse_man.jsp</welcome-file>
+    <welcome-file>/WEB-INF/index.html</welcome-file>
   </welcome-file-list>
     
 </web-app>

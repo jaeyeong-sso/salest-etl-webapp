@@ -40,8 +40,12 @@
 			<batch:tasklet ref="cleanup-tasklet"/>
 	    </batch:step>
 	    
-	    <batch:step id="mrjob" next="loadToMySQL">
+	    <batch:step id="mrjob" next="JdbcCleanUp">
 	      <batch:tasklet ref="mrjob-tasklet"/>
+	    </batch:step>
+	    
+	    <batch:step id="JdbcCleanUp" next="loadToMySQL">
+	      <batch:tasklet ref="jdbcCleanUp"/>
 	    </batch:step>
 	    
 		<batch:step id="loadToMySQL" next="endup">  
@@ -115,7 +119,7 @@
 		<property name="sql">  
 			<value>  
 	            <![CDATA[         
-	              insert into daily_tr_summary(date,num_of_order,total_amount) values (:date,:num_of_order,:total_amount) 
+	              INSERT INTO daily_tr_summary(date,num_of_order,total_amount) VALUES (:date,:num_of_order,:total_amount) 
 	             ]]>  
 			</value>  
 		</property>  
@@ -124,5 +128,10 @@
    			<bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />  
   		</property>  
     </bean>  
+    
+    <bean id="jdbcCleanUp" class="com.salest.etl.adminconsole.batch.JdbcCleanUp">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
 	
 </beans>

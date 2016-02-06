@@ -65,7 +65,11 @@ public class DFSAdminReportDAOImpl implements DFSAdminReportDAO {
 	public List<DFSAdminReport> list() {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.openSession();
-		List<DFSAdminReport> resultList = session.createQuery("from dfsadmin_report").list();
+		
+		Criteria criteria = session.createCriteria(DFSAdminReport.class);
+		criteria.setMaxResults(50);
+		List<DFSAdminReport> resultList = criteria.list();
+
         session.close();
         return resultList;
 	}

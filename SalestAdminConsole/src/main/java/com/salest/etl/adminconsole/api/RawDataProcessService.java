@@ -22,9 +22,6 @@ import com.salest.etl.adminconsole.dao.DFSAdminReportDAOImpl;
 import com.salest.etl.adminconsole.hdfs.HDFSService;
 import com.salest.etl.adminconsole.model.DFSAdminReport;
 
-//import com.salest.etl.adminconsole.dao.DailyTrSummaryDAO;
-//import com.salest.etl.adminconsole.model.DailyTrSummary;
-
 @Component
 @Path("/rawdata")
 public class RawDataProcessService {
@@ -67,11 +64,10 @@ public class RawDataProcessService {
 				
 				dfsAdminReportDAO.update(obj);
 			}
-			
+		
 			//JobExecution jobExe = jobLauncher.run(dailyAggBatchJob, new JobParameters());
-			//return Response.status(Response.Status.OK).build();
-
 			return Response.status(Response.Status.OK).build();
+
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
