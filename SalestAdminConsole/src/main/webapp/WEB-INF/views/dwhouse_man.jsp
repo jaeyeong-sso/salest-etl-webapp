@@ -200,10 +200,10 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="index.html"><i class="fa fa-database fa-fw"></i> DW Management</a>
+                            <a href="/SalestAdminConsole/web/dwhouse_man.jsp"><i class="fa fa-database fa-fw"></i> DW Management</a>
                         </li>
                         <li>
-                            <a href="status_batch_job.html"><i class="glyphicon glyphicon-align-left"></i> Batch Job Status</a>
+                            <a href="/SalestAdminConsole/web/batchjob_status.jsp"><i class="glyphicon glyphicon-align-left"></i> Batch Job Status</a>
                         </li>
                     </ul>
                 </div>
@@ -237,16 +237,27 @@
 	                        <div class="panel-heading"><i class="glyphicon glyphicon-align-left"></i> Node Information</div>
 	                        <div class="panel-body">
 	                        
+	                        
 								<div class="panel panel-green">
 									<div class="panel-heading">datanode-1</div>
 									<div class="panel-body">
-										<p><b>[Address]</b> 192.168.118.130:50010 (192.168.118.130)</p>
-										<p><b>[Remaining]</b> 126893 (123.92 KB)</p>
-										<p><b>[Used]</b> 6838005760 (6.37 GB)</p>
+										<div class="list-group">
+											<a href="#" class="list-group-item">
+												<i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;&nbsp;Address
+												<span class="pull-right text-muted small"><em>192.168.118.130:50010 (192.168.118.130)</em></span>
+											</a>
+											<a href="#" class="list-group-item">
+												<i class="glyphicon glyphicon-folder-close"></i>&nbsp;&nbsp;&nbsp;Used
+												<span class="pull-right text-muted small"><em>126893 (123.92 KB)</em></span>
+											</a>
+											<a href="#" class="list-group-item">
+												<i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;&nbsp;Remaining
+												<span class="pull-right text-muted small"><em>6838005760 (6.37 GB)</em></span>
+											</a>
+										</div>
 									</div>
 								</div>
 								
-							</div>
 						</div>
 	
 					</div>

@@ -1,18 +1,15 @@
 package com.salest.etl.adminconsole.web;
  
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
  
 @Controller
-public class AdminConsoleIndexController {
+public class DWManagementController {
 
-	@RequestMapping("/")
-	public ModelAndView index(){
- 		ModelAndView mv = new ModelAndView("index");
+	@RequestMapping("/dwhouse_man")
+	public ModelAndView dwhouse_man(){
+ 		ModelAndView mv = new ModelAndView("dwhouse_man");
 		return mv;
 	}
 
