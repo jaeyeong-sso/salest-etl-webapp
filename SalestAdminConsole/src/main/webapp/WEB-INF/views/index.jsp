@@ -33,16 +33,14 @@
     <!-- Custom Fonts -->
     <link href="/static/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-    <!--
-    <script src="/static/js/flot-data.js"></script>
-	-->
+	
 
 	<style type="text/css">
 		.btn-file {
@@ -69,7 +67,7 @@
 		}
 	</style>
 	
-	<script>
+		<script>
 	    $(document).ready(function() {
 	        $('#uploadBtn').click(function() {
 
@@ -107,13 +105,15 @@
 	        });
 	        
 	    });
-	   	    
+	   	
+	    <!--
 	    $(document).on('change', '.btn-file :file', function() {
 	    	  var input = $(this),
 	    	      numFiles = input.get(0).files ? input.get(0).files.length : 1,
 	    	      label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
 	    	  input.trigger('fileselect', [numFiles, label]);
 	    });
+	    -->
 
 	    $(document).ready( function() {
 	    	    $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
@@ -145,28 +145,19 @@
 	    
 	</script>
 	
-	<script type="text/javascript">
-    
+	<script>
 		$(function() {
-    			
-		        var data = [{
-		            label: "Used",
-		            data: 99
+		    Morris.Donut({
+		        element: 'hdfs-usage-donut-chart',
+		        data: [{
+		            label: "Remaining",
+		            value: 99
 		        }, {
-		            label: "Remained",
-		            data: 1
-		        }];
-		        
-		        var plotObj = $.plot($("#flot-pie-chart"), data, {
-		            series: {
-		                pie: {
-		                    show: true
-		                }
-		            },
-		            grid: {
-		                hoverable: true
-		            }
-		        })
+		            label: "Used",
+		            value: 1
+		        }],
+		        resize: true
+		    });
 		})
 		
 	</script>
@@ -211,6 +202,9 @@
                         <li>
                             <a href="index.html"><i class="fa fa-database fa-fw"></i> DW Management</a>
                         </li>
+                        <li>
+                            <a href="status_batch_job.html"><i class="glyphicon glyphicon-align-left"></i> Batch Job Status</a>
+                        </li>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -227,18 +221,38 @@
             </div>
             <!-- /.row -->
             
-			<div class="row">
-	            <div class="panel panel-default">
-					<div class="panel-heading">HDFS Cluster Status</div>
-					<!-- /.panel-heading -->
-					<div class="panel-body">
-						<div class="flot-chart">
-							<div class="flot-chart-content" id="flot-pie-chart" style="width: 300px; height: 300px"></div>
+            <div class="row">
+            	<div class="col-lg-12">
+            		<div class="col-lg-6">
+						<div class="panel panel-default" >
+							<div class="panel-heading"><i class="fa fa-database fa-fw"></i> HDFS Usage Status</div>
+							<div class="panel-body">
+								<div id="hdfs-usage-donut-chart"></div>
+							</div>
 						</div>
 					</div>
-				</div>
+			        <div class="col-lg-6">
+			        
+						<div class="panel panel-default">
+	                        <div class="panel-heading"><i class="glyphicon glyphicon-align-left"></i> Node Information</div>
+	                        <div class="panel-body">
+	                        
+								<div class="panel panel-green">
+									<div class="panel-heading">datanode-1</div>
+									<div class="panel-body">
+										<p><b>[Address]</b> 192.168.118.130:50010 (192.168.118.130)</p>
+										<p><b>[Remaining]</b> 126893 (123.92 KB)</p>
+										<p><b>[Used]</b> 6838005760 (6.37 GB)</p>
+									</div>
+								</div>
+								
+							</div>
+						</div>
+	
+					</div>
+                </div>
 			</div>
-           
+			
             <!--
             <div class="row">
             	<div class="col-lg-12">
@@ -300,23 +314,23 @@
 							</p>
 							
 							<div class="panel panel-default">
-                        		<div class="panel-heading"> Batch Job </div>
+                        		<div class="panel-heading"> Files info. </div>
 								<div class="panel-body">
  									<div class="table-responsive">
 										<table class="table table-striped table-bordered table-hover">
 		                                    <thead>
 		                                        <tr>
-		                                            <th>Job Name</th>
-		                                            <th>State</th>
-		                                            <th>Start Time</th>
-		                                            <th>End Time</th>
+		                                            <th>File name</th>
+		                                            <th>File path</th>
+		                                            <th>File size</th>
+		                                            <th>Update Time</th>
 		                                        </tr>
 		                                    </thead>
 		                                    <tbody>
 		                                        <tr>
-		                                            <td>mrJob</td>
-		                                            <td>COMPLETE</td>
-		                                            <td>2016/02/04 14:00:00</td>
+		                                            <td>transaction_receipt.data</td>
+		                                            <td>/salest/raw_data/</td>
+		                                            <td>128KB</td>
 		                                            <td>2016/02/04 14:00:20</td>
 		                                        </tr>
 		                                    </tbody>
@@ -338,11 +352,11 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-upload fa-fw"></i> Extract each files from SequenceFile
+                            <i class="fa fa-upload fa-fw"></i> Batch Job Execution Test
                         </div>
                         <!-- /.panel-heading -->
 						<div class="panel-body">
-							<button id="extractFromSeqFileBtn" type="button" class="btn btn-primary">Extract</button>
+							<button id="extractFromSeqFileBtn" type="button" class="btn btn-primary">Do it!</button>
 						</div>
                         <!-- /.panel-body -->
                     </div>
@@ -370,15 +384,12 @@
     <!-- Morris Charts JavaScript -->
     <script src="/static/bower_components/raphael/raphael-min.js"></script>
     <script src="/static/bower_components/morrisjs/morris.min.js"></script>
+    <!-- 
     <script src="/static/js/morris-data.js"></script>
-    
+	-->
+	
     <!-- Custom Theme JavaScript -->
     <script src="/static/dist/js/sb-admin-2.js"></script>
-    
-	<!-- Flot Charts JavaScript -->
-    <script src="/static/bower_components/flot/jquery.flot.js"></script>
-    <script src="/static/bower_components/flot/jquery.flot.pie.js"></script>
-    <script src="/static/bower_components/flot/jquery.flot.resize.js"></script>
     
 </body>
 
