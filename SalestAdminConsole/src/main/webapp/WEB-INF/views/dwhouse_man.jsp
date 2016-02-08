@@ -106,6 +106,20 @@
 	            });
 	        });
 	        
+	        $('#printResultBtn').click(function() {
+	            $.ajax({
+	                url: "/SalestAdminConsole/api/rawdata/print_result",
+	                type: 'POST',
+	                contentType: false,
+	                processData: false,
+	                success: function(data, textStatus, jqXHR) {
+	                		//alert('ajax ok');
+		                }, error: function(jqXHR, textStatus, errorThrown) {
+		                	alert('ajax failed');
+		                }
+	            });
+	        });
+	        
 	    });
 	   	
 	    <!--
@@ -179,7 +193,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Sales Temperature - Admin Console</a>
+                <a class="navbar-brand" href="/SalestAdminConsole/web/dwhouse_man">Sales Temperature - Admin Console</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -244,12 +258,12 @@
 									<c:forEach var="NodeInfo" items="${NodeInfoItems}">
 
 										<div class="panel panel-green">
-											<div class="panel-heading">${NodeInfo.name}</div>
+											<div class="panel-heading">${NodeInfo.hostname}</div>
 											<div class="panel-body">
 											<div class="list-group">
 												<a href="#" class="list-group-item">
 													<i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;&nbsp;Address
-													<span class="pull-right text-muted small"><em>${NodeInfo.hostname}</em></span>
+													<span class="pull-right text-muted small"><em>${NodeInfo.name}</em></span>
 												</a>
 												<a href="#" class="list-group-item">
 													<i class="glyphicon glyphicon-folder-close"></i>&nbsp;&nbsp;&nbsp;Used
@@ -380,9 +394,26 @@
                         <!-- /.panel-body -->
                     </div>
                 </div>
-
             </div>
             <!-- /.row -->
+            
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-upload fa-fw"></i> Batch Job Execution Test
+                        </div>
+                        <!-- /.panel-heading -->
+						<div class="panel-body">
+							<button id="printResultBtn" type="button" class="btn btn-primary">Do it!</button>
+						</div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            
         </div>
         <!-- /#page-wrapper -->
 

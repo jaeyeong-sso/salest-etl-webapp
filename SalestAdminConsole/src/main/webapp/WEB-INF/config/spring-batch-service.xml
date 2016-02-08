@@ -48,16 +48,12 @@
 	      <batch:tasklet ref="jdbcCleanUp"/>
 	    </batch:step>
 	    
-		<batch:step id="loadToMySQL" next="endup">  
+		<batch:step id="loadToMySQL">  
 			<batch:tasklet transaction-manager="transactionManager">  
 				<batch:chunk reader="hdfsReader" writer="databaseItemWriter" commit-interval="2"/>  
 			</batch:tasklet>  
 		</batch:step> 
-		
-	    <batch:step id="endup">
-	       <batch:tasklet ref="setup-tasklet" />
-	    </batch:step>
-	    
+
 	    <batch:listeners>
 	    	<batch:listener>
 	    		<bean class="com.salest.etl.adminconsole.batch.DailyTrSumJobExecutionListener"/>

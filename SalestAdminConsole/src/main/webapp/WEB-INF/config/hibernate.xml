@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans.xsd">
-	
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+        
+	<!--
 	<import resource="data-source.xml" />
-		
+	-->
+	
 	<!-- Hibernate 3 Annotation SessionFactory Bean definition-->
-    <bean id="hibernate3AnnotatedSessionFactory"
+    <bean id="hibernateSessionFactory"
         class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
         <property name="annotatedClasses">
             <list>
                 <value>com.salest.etl.adminconsole.model.DailyTrSummary</value>
                 <value>com.salest.etl.adminconsole.model.DFSAdminReport</value>
+                <value>com.salest.etl.adminconsole.model.BatchJobExecution</value>
+                <value>com.salest.etl.adminconsole.model.BatchJobInstance</value>
+                <value>com.salest.etl.adminconsole.model.BatchStepExecution</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -25,13 +37,27 @@
         </property>
     </bean>
     
+    
+	<!-- Transaction Manager -->
+	<bean id="hibernateTxManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	    <property name="sessionFactory">
+	        <ref bean="hibernateSessionFactory" />
+	    </property>
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="hibernateTxManager" />
+	
     <!-- DAO --> 
     <bean id="dailyTrSummaryDAO" class="com.salest.etl.adminconsole.dao.DailyTrSummaryDAOImpl">
-        <property name="sessionFactory" ref="hibernate3AnnotatedSessionFactory" />
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
     </bean>
     
     <bean id="dfsAdminReportDAO" class="com.salest.etl.adminconsole.dao.DFSAdminReportDAOImpl">
-        <property name="sessionFactory" ref="hibernate3AnnotatedSessionFactory" />
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
     </bean>
     
-</beans>    
+    <bean id="batchJobExecutionDAO" class="com.salest.etl.adminconsole.dao.BatchJobExecutionDAOImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+  
+</beans>

@@ -8,4 +8,5 @@ public interface DailyTrSummaryDAO {
 	
 	public void save(DailyTrSummary obj);
 	public List<DailyTrSummary> list();
+	public DailyTrSummary getLatestDateItem();
 }
