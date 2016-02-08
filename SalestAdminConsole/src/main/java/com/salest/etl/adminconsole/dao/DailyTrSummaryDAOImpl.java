@@ -39,6 +39,21 @@ public class DailyTrSummaryDAOImpl implements DailyTrSummaryDAO {
         return resultList;
 	}
 
+	public DailyTrSummary getEarliestDateItem() {
+		Session session = this.sessionFactory.openSession();
+		
+		Criteria criteria = session.createCriteria(DailyTrSummary.class);
+		List<DailyTrSummary> resultList = criteria.addOrder(Property.forName("date").asc()).setMaxResults(1).list();
+		
+		session.close();
+		
+		if( (resultList!=null) && (!resultList.isEmpty()) ){
+			return resultList.get(0);
+		} else {
+			return null;
+		}
+	}
+	
 	public DailyTrSummary getLatestDateItem() {
 		Session session = this.sessionFactory.openSession();
 		
@@ -53,5 +68,5 @@ public class DailyTrSummaryDAOImpl implements DailyTrSummaryDAO {
 			return null;
 		}
 	}
-    
+
 }
