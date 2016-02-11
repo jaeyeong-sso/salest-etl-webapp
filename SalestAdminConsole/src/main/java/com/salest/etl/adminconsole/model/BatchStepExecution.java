@@ -42,6 +42,9 @@ public class BatchStepExecution {
 	@Column(name="EXIT_CODE")
 	private String exit_code;
 	
+	@Column(name="EXIT_MESSAGE")
+	private String exit_message;
+	
 	@Column(name="LAST_UPDATED")
 	private Date last_updated;
 
@@ -116,6 +119,13 @@ public class BatchStepExecution {
 	}
 	public void setExit_code(String exit_code){
 		this.exit_code = exit_code;
+	}
+	
+	public String getExit_message(){
+		return this.exit_message;
+	}
+	public void setExit_message(String exit_message){
+		this.exit_message = exit_message;
 	}
 	
 	public Date getLast_updated(){

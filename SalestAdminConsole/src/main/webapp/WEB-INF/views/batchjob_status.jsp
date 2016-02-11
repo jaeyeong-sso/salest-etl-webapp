@@ -27,7 +27,7 @@
     
 	<!-- DataTables Responsive CSS -->
     <link href="/static/bower_components/datatables-responsive/css/dataTables.responsive.css" rel="stylesheet">
-	
+
 </head>
 
 <body>
@@ -86,30 +86,7 @@
                 </div>
             </div>
             
-            <!--
-            <div>
-            	<table>
-					<c:if test="${not empty batchJobs}">
-						<c:forEach var="batchJobs" items="${batchJobs}">
-                                    	
- 							<tr class="odd gradeX">
-								<td>${batchJobs.batchJobInstance.getJob_name()}</td>
-								
-								<c:if test="${not empty batchJobs.batchStepExecutions}">
-								<c:forEach var="stepJob" items="${batchJobs.getBatchStepExecutions()}">
-									<td>${stepJob.getStep_name()}</td>
-								</c:forEach>
-								</c:if>
-								
-							</tr>
-                                    	
-						</c:forEach>
-					</c:if>
-            	</table>    	
-			</div>
-			-->
-
-           <!-- /.row -->
+            <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
@@ -141,14 +118,16 @@
 	                                        	<div class="list-group">
 													<c:if test="${not empty batchJob.batchStepExecutions}">
 													<c:forEach var="stepJob" items="${batchJob.getBatchStepExecutions()}">
-														<a href="#" class="list-group-item">
-															<i class="glyphicon glyphicon-ok"></i> ${stepJob.getStep_name()}
-															
-															<span class="pull-right text-muted small"><em>End Time : ${stepJob.getEnd_time().toString()}</em></span>
-															<span class="pull-right text-muted small"><em>&nbsp;|&nbsp;</em></span>
-															<span class="pull-right text-muted small"><em>Start Time : ${stepJob.getStart_time().toString()}</em></span>
-															<span class="pull-right text-muted small"><em>&nbsp;|&nbsp;</em></span>
-															<span class="pull-right text-muted small"><em><b>${stepJob.getStatus()}</b></em></span>		
+								
+														<a href="javascript:;" onclick="alert('ok');" class="list-group-item">
+																
+																<i class="glyphicon glyphicon-ok"></i> ${stepJob.getStep_name()}
+
+																<span class="pull-right text-muted small"><em>End Time : ${stepJob.getEnd_time().toString()}</em></span>
+																<span class="pull-right text-muted small"><em>&nbsp;|&nbsp;</em></span>
+																<span class="pull-right text-muted small"><em>Start Time : ${stepJob.getStart_time().toString()}</em></span>
+																<span class="pull-right text-muted small"><em>&nbsp;|&nbsp;</em></span>
+																<span class="pull-right text-muted small"><em><b>${stepJob.getStatus()}</b></em></span>		
 														</a>
 													</c:forEach>
 													</c:if>
@@ -167,6 +146,47 @@
                     <!-- /.panel -->
                 </div>
                 <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            
+			<!-- /.row -->		
+			<div class="row">
+				<div class="panel panel-default">
+ 					<div class="panel-heading">Daily Aggregation Record Summary</div>
+						<!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Record Date</th>
+                                            <th>Number of Transactions</th>
+                                            <th>Total Sales Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Earliest Record</td>
+                                            <td>${earliestDateItem.getDate().toString()}</td>
+                                            <td>${earliestDateItem.getNumOfOrder()}</td>
+                                            <td>${earliestDateItem.getTotalAmount()}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Latest Record</td>
+                                            <td>${latestDateItem.getDate().toString()}</td>
+                                            <td>${latestDateItem.getNumOfOrder()}</td>
+                                            <td>${latestDateItem.getTotalAmount()}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
             </div>
             <!-- /.row -->
             

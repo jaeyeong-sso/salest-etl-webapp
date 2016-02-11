@@ -92,7 +92,7 @@
 	            });
 	        });
 	        
-	        $('#extractFromSeqFileBtn').click(function() {
+	        $('#runTestBatchBtn').click(function() {
 	            $.ajax({
 	                url: "/SalestAdminConsole/api/rawdata/agg_tr_daily",
 	                type: 'POST',
@@ -161,19 +161,46 @@
 	    
 	</script>
 	
-	<script>
+	
+	<script type="text/javascript">
+	
+		//var PresentCapacity_= <c:out value="${PresentCapacity}"/> 
+		//var ConfiguredCapacity_ = <c:out value="${ConfiguredCapacity}"/> 
+		
 		$(function() {
+			
+			$.ajax({
+				type: "GET",
+				dataType: "json",
+				contentType: "application/json",
+				url: "/SalestAdminConsole/api/viewdata/cluster_info",
+				success: function (response) {
+					alert(response.configured_capacity);
+					/*
+			                Morris.Donut({
+			                    element: 'donut-example',
+			                    data: response
+			                });
+					*/
+			            },
+            	error: function () {
+					alert("Error loading data! Please try again.");
+				}
+			});
+			
+			/*
+			var PresentCapacity= 60;
+			var ConfiguredCapacity = 40;
+		
+			var dataArr = [{label: PresentCapacity_, value: PresentCapacity}, 
+			               {label: "Used",value: ConfiguredCapacity}];
+	    	
 		    Morris.Donut({
 		        element: 'hdfs-usage-donut-chart',
-		        data: [{
-		            label: "Remaining",
-		            value: 99
-		        }, {
-		            label: "Used",
-		            value: 1
-		        }],
+		        data: dataArr,
 		        resize: true
 		    });
+		    */
 		})
 		
 	</script>
@@ -253,9 +280,9 @@
 	                        <div class="panel-heading"><i class="glyphicon glyphicon-align-left"></i> Node Information</div>
 	                        <div class="panel-body">
 	                        
-	                        	<c:if test="${not empty NodeInfoItems}">
+	                        	<c:if test="${not empty hdfsNodesInfo}">
 
-									<c:forEach var="NodeInfo" items="${NodeInfoItems}">
+									<c:forEach var="NodeInfo" items="${hdfsNodesInfo}">
 
 										<div class="panel panel-green">
 											<div class="panel-heading">${NodeInfo.hostname}</div>
@@ -385,11 +412,11 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-upload fa-fw"></i> Batch Job Execution Test
+                            <i class="fa fa-upload fa-fw"></i> Test Run Batch Job(Aggregate Daily Receipt Transaction)
                         </div>
                         <!-- /.panel-heading -->
 						<div class="panel-body">
-							<button id="extractFromSeqFileBtn" type="button" class="btn btn-primary">Do it!</button>
+							<button id="runTestBatchBtn" type="button" class="btn btn-primary">Run it!</button>
 						</div>
                         <!-- /.panel-body -->
                     </div>

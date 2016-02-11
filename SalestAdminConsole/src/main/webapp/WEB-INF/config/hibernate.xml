@@ -22,7 +22,8 @@
         <property name="annotatedClasses">
             <list>
                 <value>com.salest.etl.adminconsole.model.DailyTrSummary</value>
-                <value>com.salest.etl.adminconsole.model.DFSAdminReport</value>
+                <value>com.salest.etl.adminconsole.model.HdfsNodesInfo</value>
+                <value>com.salest.etl.adminconsole.model.HdfsClusterInfo</value>
                 <value>com.salest.etl.adminconsole.model.BatchJobExecution</value>
                 <value>com.salest.etl.adminconsole.model.BatchJobInstance</value>
                 <value>com.salest.etl.adminconsole.model.BatchStepExecution</value>
@@ -52,7 +53,11 @@
         <property name="sessionFactory" ref="hibernateSessionFactory" />
     </bean>
     
-    <bean id="dfsAdminReportDAO" class="com.salest.etl.adminconsole.dao.DFSAdminReportDAOImpl">
+    <bean id="hdfsNodesInfoDAO" class="com.salest.etl.adminconsole.dao.HdfsNodesInfoDAOImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory" />
+    </bean>
+    
+    <bean id="hdfsClusterInfoDAO" class="com.salest.etl.adminconsole.dao.HdfsClusterInfoDAOImpl">
         <property name="sessionFactory" ref="hibernateSessionFactory" />
     </bean>
     

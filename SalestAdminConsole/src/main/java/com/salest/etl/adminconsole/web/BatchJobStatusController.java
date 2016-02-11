@@ -54,17 +54,13 @@ public class BatchJobStatusController {
 			}
 		}
 		
-		DailyTrSummary lastDateItem = dailyTrSummaryDAO.getLatestDateItem();
 		DailyTrSummary earliestDateItem = dailyTrSummaryDAO.getEarliestDateItem();
-		
-		if(lastDateItem!=null){
-			lastDateItem.getDate();
-		}
+		DailyTrSummary latestDateItem = dailyTrSummaryDAO.getLatestDateItem();
 		
 		ModelAndView mv = new ModelAndView("batchjob_status");
 		mv.addObject("batchJobs", batchJobs);
 		mv.addObject("earliestDateItem", earliestDateItem);
-		mv.addObject("lastDateItem", lastDateItem);
+		mv.addObject("latestDateItem", latestDateItem);
 		
 		return mv;
 	}

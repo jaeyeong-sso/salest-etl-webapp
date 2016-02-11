@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.salest.etl.adminconsole.dao.BatchJobExecutionDAO;
-import com.salest.etl.adminconsole.dao.DFSAdminReportDAO;
 import com.salest.etl.adminconsole.hdfs.HDFSService;
 import com.salest.etl.adminconsole.model.BatchJobExecution;
 import com.salest.etl.adminconsole.model.BatchJobInstance;
@@ -32,9 +31,6 @@ public class RawDataProcessService {
 
 	@Autowired
 	Job dailyAggBatchJob;
-	    
-	@Autowired
-	DFSAdminReportDAO dfsAdminReportDAO;
 	
 	@Autowired
 	BatchJobExecutionDAO batchJobExecutionDAO;
@@ -54,23 +50,6 @@ public class RawDataProcessService {
 	public Response execAggTrData() {
 		
 		try {
-			
-			/*
-			HashMap<String,String> dfsAdminInfoMap = hdfsService.reportHDFSClusterStatus();
-			
-			if(dfsAdminInfoMap!=null){
-						
-				DFSAdminReport obj = new DFSAdminReport();
-			
-				obj.setName(dfsAdminInfoMap.get("name"));
-				obj.setHostname(dfsAdminInfoMap.get("hostname"));
-				obj.setDfs_used(dfsAdminInfoMap.get("dfs_used"));
-				obj.setDfs_remaining(dfsAdminInfoMap.get("dfs_remaining"));
-				
-				dfsAdminReportDAO.update(obj);
-			}
-			*/
-		
 			JobExecution jobExe = jobLauncher.run(dailyAggBatchJob, new JobParameters());
 			
 			return Response.status(Response.Status.OK).build();

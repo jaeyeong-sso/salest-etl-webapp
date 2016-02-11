@@ -8,9 +8,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
-import com.salest.etl.adminconsole.model.DFSAdminReport;
+import com.salest.etl.adminconsole.model.HdfsNodesInfo;
 
-public class DFSAdminReportDAOImpl implements DFSAdminReportDAO {
+public class HdfsNodesInfoDAOImpl implements HdfsNodesInfoDAO {
 	
 	private SessionFactory sessionFactory;
 	
@@ -18,20 +18,21 @@ public class DFSAdminReportDAOImpl implements DFSAdminReportDAO {
 		this.sessionFactory = sessionFactory;
 	}
 
-	public void update(DFSAdminReport target) {
+	public void update(HdfsNodesInfo target) {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         
-        Criteria criteria = session.createCriteria(DFSAdminReport.class);
+        Criteria criteria = session.createCriteria(HdfsNodesInfo.class);
         
-        DFSAdminReport searchItem = (DFSAdminReport) criteria.add(Restrictions.eq("name", target.getName())).uniqueResult();
+        HdfsNodesInfo searchItem = (HdfsNodesInfo) criteria.add(Restrictions.eq("name", target.getName())).uniqueResult();
             
         if(searchItem!=null){
         	
         	searchItem.setHostname(target.getHostname());
         	searchItem.setDfs_used(target.getDfs_used());
         	searchItem.setDfs_remaining(target.getDfs_remaining());
+        	searchItem.setDfs_remaining_percent(target.getDfs_remaining_percent());
         	session.update(searchItem);
         	
         } else {
@@ -42,7 +43,7 @@ public class DFSAdminReportDAOImpl implements DFSAdminReportDAO {
         session.close();
 	}
 		
-	public void save(DFSAdminReport obj) {
+	public void save(HdfsNodesInfo obj) {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
@@ -51,24 +52,24 @@ public class DFSAdminReportDAOImpl implements DFSAdminReportDAO {
         session.close();
 	}
 	
-	public void saveList(List<DFSAdminReport> objList) {
+	public void saveList(List<HdfsNodesInfo> objList) {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
-        for(DFSAdminReport obj : objList){
+        for(HdfsNodesInfo obj : objList){
         	session.saveOrUpdate(obj);
         }
         tx.commit();
         session.close();
 	}
 
-	public List<DFSAdminReport> list() {
+	public List<HdfsNodesInfo> list() {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.openSession();
 		
-		Criteria criteria = session.createCriteria(DFSAdminReport.class);
+		Criteria criteria = session.createCriteria(HdfsNodesInfo.class);
 		criteria.setMaxResults(50);
-		List<DFSAdminReport> resultList = criteria.list();
+		List<HdfsNodesInfo> resultList = criteria.list();
 
         session.close();
         return resultList;

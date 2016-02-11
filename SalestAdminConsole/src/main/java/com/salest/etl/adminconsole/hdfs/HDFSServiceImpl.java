@@ -12,6 +12,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hdfs.tools.DFSAdmin;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.salest.etl.adminconsole.dao.HdfsClusterInfoDAO;
+import com.salest.etl.adminconsole.dao.HdfsNodesInfoDAO;
+import com.salest.etl.adminconsole.model.HdfsClusterInfo;
+import com.salest.etl.adminconsole.model.HdfsNodesInfo;
 
 
 public class HDFSServiceImpl implements HDFSService {
@@ -21,11 +27,17 @@ public class HDFSServiceImpl implements HDFSService {
 	private Configuration conf;
 	private FileSystem hdfs;
 	
+	private HashMap<String,String> hdfsClusterInfoMap;
+	private HashMap<String,String> hdfsNodesInfoMap;
+
 	public HDFSServiceImpl(){
 		conf = new Configuration();
 	    conf.set("fs.default.name", HDFS_CONF_FS_DEFAULT_NAME);
 	    conf.set("ipc.client.connect.timeout", "30000");
 	    conf.set("dfs.replication", "1");
+	    
+	    hdfsClusterInfoMap = new HashMap<String,String>();
+	    hdfsNodesInfoMap = new HashMap<String,String>();
 	}
 	
 	public void appenToFileOnHDFS(InputStream fileInputStream, String apppendFileName) {
@@ -50,10 +62,10 @@ public class HDFSServiceImpl implements HDFSService {
 	    }
 	 }
 	
-	 public HashMap<String,String> reportHDFSClusterStatus(){
+	 public void reportHDFSClusterStatus(){
 		 
 		 DFSAdmin dfsAdmin = new DFSAdmin(conf);
-		 String [] args =  new String[]{"Name","DFS Remaining"};
+		 String [] args =  new String[]{"Configured Capacity","Present Capacity","Name","DFS Remaining"};
 		 try {
 			 
 			ByteArrayOutputStream pipeOut = new ByteArrayOutputStream();
@@ -67,31 +79,44 @@ public class HDFSServiceImpl implements HDFSService {
 			String strReportOut = new String(pipeOut.toByteArray());
 			
 			if(strReportOut!=null){
-				return parseStrReportResult(strReportOut);
+				parseAndStoreReportResult(strReportOut);
 			}
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
-		return null;
 	 }
 	 
-	 private HashMap<String,String> parseStrReportResult(String strReportResult){
-		 HashMap<String,String> clsReportInfoMap = new HashMap<String,String>();
+	 private void parseAndStoreReportResult(String strReportResult){
 		 
-		 String lines[] = strReportResult.split("\\r?\\n");
+		 String sections[] = strReportResult.split("-------------------------------------------------");
 		 
-		 for(String line : lines){
-			 String[] items = line.split(":",2);
-			 if(items.length > 1){
-				 clsReportInfoMap.put(items[0].trim().toLowerCase().replace(' ', '_'), 
-						 			  items[1].trim());
+		 if(sections.length>1){
+			 
+			 String clusterInfoLines[] = sections[0].split("\\r?\\n");
+			 
+			 for(String line : clusterInfoLines){
+				 String[] items = line.split(":",2);
+				 hdfsClusterInfoMap.put(items[0].trim().toLowerCase().replace(' ', '_'), items[1].trim());
+			 }
+			 
+			 String nodeInfolines[] = sections[1].split("\\r?\\n");
+			 
+			 for(String line : nodeInfolines){
+				 String[] items = line.split(":",2);
+				 if(items.length > 1){
+					 hdfsNodesInfoMap.put(items[0].trim().toLowerCase().replace(' ', '_'), items[1].trim());
+				 }
 			 }
 		 }
-			
-		 return clsReportInfoMap;
 	 }
-	
+	 
+	 public HashMap<String,String> getHdfsClusterInfoMap(){
+		 return this.hdfsClusterInfoMap;
+	 }
+	 public HashMap<String,String> getHdfsNodesInfoMap(){
+		 return this.hdfsNodesInfoMap;
+	 }
+	 
 }

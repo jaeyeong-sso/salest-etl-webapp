@@ -11,5 +11,6 @@ public class JerseyApplication extends ResourceConfig {
 		register(MultiPartFeature.class);
 		register(RawDataProcessService.class);
 		register(RawFileUploadService.class);
+		register(ViewDataService.class);
 	}
 }

@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="dfsadmin_report")
-public class DFSAdminReport {
+@Table(name="hdfs_nodes_info")
+public class HdfsNodesInfo {
 	
 	@Id
 	@Column(name="id")
@@ -20,8 +20,9 @@ public class DFSAdminReport {
 	private String hostname;
 	private String dfs_used;
 	private String dfs_remaining;
+	private String dfs_remaining_percent;
 
-    public DFSAdminReport(){
+    public HdfsNodesInfo(){
     	
     }
     
@@ -52,10 +53,18 @@ public class DFSAdminReport {
     public void setDfs_remaining(String dfs_remaining){
     	this.dfs_remaining = dfs_remaining;
     }
+    
+    public String getDfs_remaining_percent(){
+    	return this.dfs_remaining_percent;
+    }
+    public void setDfs_remaining_percent(String dfs_remaining_percent){
+    	this.dfs_remaining_percent = dfs_remaining_percent;
+    }
 
 	@Override
     public String toString(){
     	return "name=" + name + ", hostname=" + hostname + 
-    			", dfs_used=" + dfs_used + ", dfs_remaining=" + dfs_remaining;
+    			", dfs_used=" + dfs_used + ", dfs_remaining=" + dfs_remaining +
+    			", dfs_remaining_percent=" + dfs_remaining_percent;
     }
 }
