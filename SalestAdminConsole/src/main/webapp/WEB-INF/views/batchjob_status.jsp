@@ -104,7 +104,7 @@
 	                                    <div class="panel-heading">
 	                                        <h4 class="panel-title">
 	                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-	                                            	<i class="glyphicon glyphicon-tasks"></i> ${batchJob.batchJobInstance.getJob_name()}
+	                                            	<span><i class="glyphicon glyphicon-tasks"></i>&nbsp;&nbsp;${batchJob.batchJobInstance.getJob_name()}</span>
 													<span class="pull-right text-muted small"><em>End Time : ${batchJob.getEnd_time().toString()}</em></span>
 													<span class="pull-right text-muted small"><em>&nbsp;|&nbsp;</em></span>
 													<span class="pull-right text-muted small"><em>Start Time : ${batchJob.getStart_time().toString()}</em></span>
@@ -121,7 +121,7 @@
 								
 														<a href="javascript:;" onclick="alert('ok');" class="list-group-item">
 																
-																<i class="glyphicon glyphicon-ok"></i> ${stepJob.getStep_name()}
+																<i class="glyphicon glyphicon-ok"></i>&nbsp;&nbsp;${stepJob.getStep_name()}
 
 																<span class="pull-right text-muted small"><em>End Time : ${stepJob.getEnd_time().toString()}</em></span>
 																<span class="pull-right text-muted small"><em>&nbsp;|&nbsp;</em></span>

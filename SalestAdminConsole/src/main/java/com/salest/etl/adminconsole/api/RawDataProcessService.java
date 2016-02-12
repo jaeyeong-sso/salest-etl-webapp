@@ -32,6 +32,7 @@ public class RawDataProcessService {
 	@Autowired
 	Job dailyAggBatchJob;
 	
+	
 	@Autowired
 	BatchJobExecutionDAO batchJobExecutionDAO;
 	
@@ -60,20 +61,6 @@ public class RawDataProcessService {
 			e.printStackTrace();
 		}
 
-/*		
-		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("Hibernate.xml");
-		
-		DailyTrSummaryDAO daoObj = context.getBean(DailyTrSummaryDAO.class);
-         
-		DailyTrSummary item = new DailyTrSummary();
-		item.setDate(new Date());
-		item.setNumOfOrder((byte)99);
-		item.setTotalAmount((long)25600);
-		daoObj.save(item);
-	     
-		context.close();    
-*/		
-		
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 	}
 	

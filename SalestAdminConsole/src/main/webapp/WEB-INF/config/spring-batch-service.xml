@@ -62,7 +62,7 @@
     
 	</batch:job>
 	
-	
+			
 	<!-- Typical ETL process -->
 	<bean id="DailyTrSummary" class="com.salest.etl.adminconsole.batch.model.DailyTrSummary" scope="prototype"></bean>  
 
@@ -90,25 +90,7 @@
 				</property>  
 			</bean>  
 		</property>  
-	</bean>  
-
-<!--   
-	<bean id="cvsItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">  
-		<property name="resource" value="classpath:part-r-00000" />  
-		<property name="lineMapper">  
-			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">  
-				<property name="lineTokenizer">  
-					<bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">  
-						<property name="names" value="date,num_of_order,total_amount" />  
-					</bean>  
-				</property>  
-				<property name="fieldSetMapper">     
-					<bean class="com.salest.etl.adminconsole.batch.model.DailyTrSummaryFieldSetMapper" />  
-				</property>  
-			</bean>  
-		</property>  
-	</bean>  
--->     
+	</bean>     
 
 	<bean id="databaseItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">  
 		<property name="dataSource" ref="dataSource" />  

@@ -1,13 +1,10 @@
 package com.salest.etl.adminconsole.dao;
 
-import java.util.List;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-import com.salest.etl.adminconsole.model.BatchJobExecution;
 import com.salest.etl.adminconsole.model.HdfsClusterInfo;
 
 public class HdfsClusterInfoDAOImpl implements HdfsClusterInfoDAO {
@@ -30,6 +27,7 @@ public class HdfsClusterInfoDAOImpl implements HdfsClusterInfoDAO {
         if(searchItem!=null){
         	searchItem.setConfigured_capacity(target.getConfigured_capacity());
         	searchItem.setPresent_capacity(target.getPresent_capacity());
+        	searchItem.setDfs_used(target.getDfs_used());
         	session.update(searchItem);
         	
         } else {

@@ -18,6 +18,7 @@ public class HdfsClusterInfo {
 	
 	private String configured_capacity;
 	private String present_capacity;
+	private String dfs_used;
 	
 	public String getConfigured_capacity(){
 		return this.configured_capacity;
@@ -33,4 +34,10 @@ public class HdfsClusterInfo {
 		this.present_capacity = present_capacity;
 	}
 	
+	public String getDfs_used(){
+		return this.dfs_used;
+	}
+	public void setDfs_used(String dfs_used){
+		this.dfs_used = dfs_used;
+	}
 }

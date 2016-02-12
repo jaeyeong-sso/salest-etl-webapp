@@ -12,6 +12,7 @@ import com.salest.etl.adminconsole.dao.HdfsClusterInfoDAO;
 import com.salest.etl.adminconsole.dao.HdfsNodesInfoDAO;
 import com.salest.etl.adminconsole.hdfs.HDFSService;
 import com.salest.etl.adminconsole.model.HdfsClusterInfo;
+import com.salest.etl.adminconsole.model.HdfsFileListingInfo;
 import com.salest.etl.adminconsole.model.HdfsNodesInfo;
  
 @Controller
@@ -32,10 +33,13 @@ public class DWManagementController {
 
 		this.retrieveHDFSInformation();
 		
+		List<HdfsFileListingInfo> hdfsFilesInfoList= hdfsService.doFileListing();
+		
 		List<HdfsNodesInfo> hdfsNodesInfo = hdfsNodesInfoDAO.list();
 
  		ModelAndView mv = new ModelAndView("dwhouse_man");
  		mv.addObject("hdfsNodesInfo", hdfsNodesInfo);
+ 		mv.addObject("hdfsFilesInfoList",hdfsFilesInfoList);
  		
 		return mv;
 	}
@@ -50,8 +54,9 @@ public class DWManagementController {
 		HdfsClusterInfo clusterInfoModel = new HdfsClusterInfo();
 		clusterInfoModel.setConfigured_capacity(hdfsClusterInfoMap.get(HDFSService.dfsadmin_configured_capacity_key));
 		clusterInfoModel.setPresent_capacity(hdfsClusterInfoMap.get(HDFSService.dfsadmin_present_capacity_key));
+		clusterInfoModel.setDfs_used(hdfsClusterInfoMap.get(HDFSService.dfsadmin_dfs_used_key));
 		hdfsClusterInfoDAO.update(clusterInfoModel);
-		 		 
+		
 		HdfsNodesInfo nodesInfoModel = new HdfsNodesInfo();
 		nodesInfoModel.setName(hdfsNodesInfoMap.get(HDFSService.dfsadmin_name_key));
 		nodesInfoModel.setHostname(hdfsNodesInfoMap.get(HDFSService.dfsadmin_hostname_key));

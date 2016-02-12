@@ -69,7 +69,7 @@
 		}
 	</style>
 	
-		<script>
+	<script>
 	    $(document).ready(function() {
 	        $('#uploadBtn').click(function() {
 
@@ -121,17 +121,23 @@
 	        });
 	        
 	    });
-	   	
-	    <!--
+	    
+	    /*
 	    $(document).on('change', '.btn-file :file', function() {
 	    	  var input = $(this),
 	    	      numFiles = input.get(0).files ? input.get(0).files.length : 1,
 	    	      label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
 	    	  input.trigger('fileselect', [numFiles, label]);
 	    });
-	    -->
+	    */
 
 	    $(document).ready( function() {
+	    	
+		    $("#attachFile").change(function(param) {
+		        $("#fileCaption").val($("#attachFile").val());
+		    });
+		    
+		    /*
 	    	    $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
 	    	        
 	    	        var input = $(this).parents('.input-group').find(':text'),
@@ -144,8 +150,8 @@
 	    	        }
 	    	        
 	    	    });
+		   	*/
 	    });
-
 
     	function showProcessMsg(bShow, message){
 	    	if(bShow == true){
@@ -164,9 +170,6 @@
 	
 	<script type="text/javascript">
 	
-		//var PresentCapacity_= <c:out value="${PresentCapacity}"/> 
-		//var ConfiguredCapacity_ = <c:out value="${ConfiguredCapacity}"/> 
-		
 		$(function() {
 			
 			$.ajax({
@@ -175,32 +178,31 @@
 				contentType: "application/json",
 				url: "/SalestAdminConsole/api/viewdata/cluster_info",
 				success: function (response) {
-					alert(response.configured_capacity);
-					/*
-			                Morris.Donut({
-			                    element: 'donut-example',
-			                    data: response
-			                });
-					*/
-			            },
+
+					var storage_cap = Number(response.configured_capacity.split(' ')[0]);
+					var hdfs_cap = Number(response.present_capacity.split(' ')[0]);
+					var hdfs_used_cap = Number(response.dfs_used.split(' ')[0]);
+						
+					var hdfs_notused_per = (storage_cap - hdfs_cap)/storage_cap * 100.0;
+					var hdfs_used_per = (hdfs_cap - hdfs_used_cap)/storage_cap * 100.0;
+					var hdfs_remained_per = (hdfs_used_cap/storage_cap) * 100.0;
+					
+					var dataArr = [{label: "HDFS not used(%)", value: hdfs_notused_per.toFixed(3)}, 
+					               {label: "HDFS remained(%)", value: hdfs_used_per.toFixed(3)},
+					               {label: "HDFS used(%)", value: hdfs_remained_per.toFixed(3)}];
+					
+				    Morris.Donut({
+				        element: 'hdfs-usage-donut-chart',
+				        data: dataArr,
+				        resize: true
+				    });
+					
+				},
             	error: function () {
 					alert("Error loading data! Please try again.");
 				}
 			});
-			
-			/*
-			var PresentCapacity= 60;
-			var ConfiguredCapacity = 40;
-		
-			var dataArr = [{label: PresentCapacity_, value: PresentCapacity}, 
-			               {label: "Used",value: ConfiguredCapacity}];
-	    	
-		    Morris.Donut({
-		        element: 'hdfs-usage-donut-chart',
-		        data: dataArr,
-		        resize: true
-		    });
-		    */
+
 		})
 		
 	</script>
@@ -268,7 +270,7 @@
             	<div class="col-lg-12">
             		<div class="col-lg-6">
 						<div class="panel panel-default" >
-							<div class="panel-heading"><i class="fa fa-database fa-fw"></i> HDFS Usage Status</div>
+							<div class="panel-heading"><i class="fa fa-database fa-fw"></i> Overall HDFS Cluster Usage</div>
 							<div class="panel-body">
 								<div id="hdfs-usage-donut-chart"></div>
 							</div>
@@ -277,7 +279,7 @@
 			        <div class="col-lg-6">
 			        
 						<div class="panel panel-default">
-	                        <div class="panel-heading"><i class="glyphicon glyphicon-align-left"></i> Node Information</div>
+	                        <div class="panel-heading"><i class="glyphicon glyphicon-align-left"></i> HDFS Nodes Information</div>
 	                        <div class="panel-body">
 	                        
 	                        	<c:if test="${not empty hdfsNodesInfo}">
@@ -361,10 +363,10 @@
 								<div class="input-group">
 									<span class="input-group-btn">
 										<span class="btn btn-primary btn-file">
-											Browse&hellip; <input type="file" id="attachFile">
+											Browse&hellip; <input type="file" id="attachFile" >
 										</span>
 									</span>
-									<input type="text" class="form-control" readonly>
+									<input type="text" id="fileCaption" class="form-control" readonly>
 									<span class="input-group-btn">
 										<span id="uploadBtn" class="btn btn-primary btn-file">upload</span>
 									</span>
@@ -374,25 +376,27 @@
 							</p>
 							
 							<div class="panel panel-default">
-                        		<div class="panel-heading"> Files info. </div>
+                        		<div class="panel-heading"> Important Files info. </div>
 								<div class="panel-body">
  									<div class="table-responsive">
 										<table class="table table-striped table-bordered table-hover">
 		                                    <thead>
 		                                        <tr>
-		                                            <th>File name</th>
-		                                            <th>File path</th>
-		                                            <th>File size</th>
+		                                            <th>File Path</th>
+		                                            <th>File Size</th>
 		                                            <th>Update Time</th>
 		                                        </tr>
 		                                    </thead>
 		                                    <tbody>
-		                                        <tr>
-		                                            <td>transaction_receipt.data</td>
-		                                            <td>/salest/raw_data/</td>
-		                                            <td>128KB</td>
-		                                            <td>2016/02/04 14:00:20</td>
-		                                        </tr>
+		                                    	<c:if test="${not empty hdfsFilesInfoList}">
+													<c:forEach var="FileInfo" items="${hdfsFilesInfoList}">
+		                                        	<tr>
+		                                            	<td>${FileInfo.filePath}</td>
+		                                            	<td>${FileInfo.fileSize}</td>
+		                                            	<td>${FileInfo.updateDate}</td>
+		                                        	</tr>
+		                                        	</c:forEach>
+		                                        </c:if>
 		                                    </tbody>
 										</table>
 									</div>
@@ -412,28 +416,11 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-upload fa-fw"></i> Test Run Batch Job(Aggregate Daily Receipt Transaction)
+                            <i class="fa fa-upload fa-fw"></i> Run Batch Job independently(Aggregate Daily Receipt Transaction)
                         </div>
                         <!-- /.panel-heading -->
 						<div class="panel-body">
 							<button id="runTestBatchBtn" type="button" class="btn btn-primary">Run it!</button>
-						</div>
-                        <!-- /.panel-body -->
-                    </div>
-                </div>
-            </div>
-            <!-- /.row -->
-            
-            <!-- /.row -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-upload fa-fw"></i> Batch Job Execution Test
-                        </div>
-                        <!-- /.panel-heading -->
-						<div class="panel-body">
-							<button id="printResultBtn" type="button" class="btn btn-primary">Do it!</button>
 						</div>
                         <!-- /.panel-body -->
                     </div>
