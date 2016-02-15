@@ -30,28 +30,37 @@ import com.salest.etl.adminconsole.model.HdfsNodesInfo;
 
 public class HDFSServiceImpl implements HDFSService {
 
-	private String HDFS_CONF_FS_DEFAULT_NAME = "hdfs://local-hadoop-namenode:9000";
+	private String HDFS_CONF_FS_DEFAULT_NAME = "hdfs://cloud-hadoop-namenode:9000";
 	
 	private Configuration conf;
 	private FileSystem hdfs;
 	
 	private HashMap<String,String> hdfsClusterInfoMap;
-	private HashMap<String,String> hdfsNodesInfoMap;
+	private ArrayList<HashMap<String,String>> hdfsNodesInfoMapArr;
 
 	public HDFSServiceImpl(){
 		conf = new Configuration();
 	    conf.set("fs.default.name", HDFS_CONF_FS_DEFAULT_NAME);
 	    conf.set("ipc.client.connect.timeout", "30000");
-	    conf.set("dfs.replication", "1");
+	    //conf.set("dfs.replication", "2");
 	    
 	    hdfsClusterInfoMap = new HashMap<String,String>();
-	    hdfsNodesInfoMap = new HashMap<String,String>();
+	    hdfsNodesInfoMapArr = new ArrayList<HashMap<String,String>>();
+	    
+	    try {
+			hdfs = FileSystem.get(conf);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			hdfs = null;
+		}
 	}
 	
 	public void appenToFileOnHDFS(InputStream fileInputStream, String apppendFileName) {
 	    
 		try {
-			hdfs = FileSystem.get(conf);
+			if(hdfs==null)
+				return;
 	    	
 			org.apache.hadoop.fs.Path trReceiptFilePath
 						= new org.apache.hadoop.fs.Path(this.DIR_PATH_RAW_DATA + "/" + this.FILE_PATH_TR_RECEIPT);
@@ -59,12 +68,10 @@ public class HDFSServiceImpl implements HDFSService {
 			if (hdfs.exists(trReceiptFilePath)) {
 				bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.append(trReceiptFilePath)));
 			} else {
-				bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.create(trReceiptFilePath, (short)1)));
+				bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.create(trReceiptFilePath, (short)2)));
 			}
 			IOUtils.copy(fileInputStream, bufWriter);
 			bufWriter.close();
-			
-			hdfs.close();
 	    }
 	    catch (IOException e){
 	      e.printStackTrace();
@@ -110,28 +117,44 @@ public class HDFSServiceImpl implements HDFSService {
 				 hdfsClusterInfoMap.put(items[0].trim().toLowerCase().replace(' ', '_'), items[1].trim());
 			 }
 			 
-			 String nodeInfolines[] = sections[1].split("\\r?\\n");
-			 
-			 for(String line : nodeInfolines){
-				 String[] items = line.split(":",2);
-				 if(items.length > 1){
-					 hdfsNodesInfoMap.put(items[0].trim().toLowerCase().replace(' ', '_'), items[1].trim());
-				 }
-			 }
+			 String nodeInfoItems[] = sections[1].split("(\\r\n|\\n|\\r){2,}");
+
+			 for(String nodeInfoItem : nodeInfoItems){
+				 
+				 String nodeInfolines[] = nodeInfoItem.split("\\r?\\n");
+				 
+				 if(nodeInfolines.length > 2){ // Excluding "Live datanodes (N):" items
+					 
+					 HashMap<String,String> hdfsNodesInfoMap = new HashMap<String,String>();
+					 
+					 for(String line : nodeInfolines){
+						 String[] items = line.split(":",2);
+						 if(items.length > 1){
+							 hdfsNodesInfoMap.put(items[0].trim().toLowerCase().replace(' ', '_'), items[1].trim());
+						 }
+					 }
+					 
+					 hdfsNodesInfoMapArr.add(hdfsNodesInfoMap);
+				}
+			 } 
 		 }
 	 }
 	 
 	 public HashMap<String,String> getHdfsClusterInfoMap(){
 		 return this.hdfsClusterInfoMap;
 	 }
-	 public HashMap<String,String> getHdfsNodesInfoMap(){
-		 return this.hdfsNodesInfoMap;
+	 public ArrayList<HashMap<String,String>> getHdfsNodesInfoMapArr(){
+		 return this.hdfsNodesInfoMapArr;
 	 }
 	 
 	 public List<HdfsFileListingInfo> doFileListing(){
 		 
+		if(hdfs==null)
+			return null;
+			
 		 try {
-			 return getAllFilePath(new org.apache.hadoop.fs.Path("/salest"), FileSystem.get(conf));
+			 List<HdfsFileListingInfo> result = getAllFilePath(new org.apache.hadoop.fs.Path("/salest"), hdfs);
+			 return result;
 			 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

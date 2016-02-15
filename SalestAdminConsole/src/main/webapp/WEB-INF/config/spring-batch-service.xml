@@ -37,20 +37,20 @@
 	<batch:job id="dailyAggBatchJob">
 	
 		<batch:step id="cleanup" next="mrjob">
-			<batch:tasklet ref="cleanup-tasklet"/>
+			<batch:tasklet ref="cleanup-tasklet" allow-start-if-complete="true"/>
 	    </batch:step>
 	    
 	    <batch:step id="mrjob" next="JdbcCleanUp">
-	      <batch:tasklet ref="mrjob-tasklet"/>
+	      <batch:tasklet ref="mrjob-tasklet" allow-start-if-complete="true"/>
 	    </batch:step>
 	    
 	    <batch:step id="JdbcCleanUp" next="loadToMySQL">
-	      <batch:tasklet ref="jdbcCleanUp"/>
+	      <batch:tasklet ref="jdbcCleanUp" allow-start-if-complete="true"/>
 	    </batch:step>
 	    
 		<batch:step id="loadToMySQL">  
-			<batch:tasklet transaction-manager="transactionManager">  
-				<batch:chunk reader="hdfsReader" writer="databaseItemWriter" commit-interval="2"/>  
+			<batch:tasklet transaction-manager="transactionManager" allow-start-if-complete="true">  
+				<batch:chunk reader="hdfsReader" writer="databaseItemWriter" commit-interval="10"/>  
 			</batch:tasklet>  
 		</batch:step> 
 
@@ -67,7 +67,7 @@
 	<bean id="DailyTrSummary" class="com.salest.etl.adminconsole.batch.model.DailyTrSummary" scope="prototype"></bean>  
 
 	<bean id="hdfsReader" class="org.springframework.batch.item.file.MultiResourceItemReader" scope="step" >
-		<property name="resources" value="${hd.fs}/${daily_tr_agg.output.path}/part-r-00000"/>
+		<property name="resources" value="${hd.fs}${daily_tr_agg.output.path}/part-r-00000"/>
 		<property name="delegate" ref="cvsItemReader"/>
 	</bean>
 	

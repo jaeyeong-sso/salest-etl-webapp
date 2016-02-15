@@ -1,6 +1,7 @@
 package com.salest.etl.adminconsole.hdfs;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public interface HDFSService {
 	public void appenToFileOnHDFS(InputStream fileInputStream, String apppendFileName);
 	public void reportHDFSClusterStatus();
 	public HashMap<String,String> getHdfsClusterInfoMap();
-	public HashMap<String,String> getHdfsNodesInfoMap();
+	public ArrayList<HashMap<String,String>> getHdfsNodesInfoMapArr();
 	
 	public List<HdfsFileListingInfo> doFileListing();
 }

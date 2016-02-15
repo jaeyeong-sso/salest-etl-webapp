@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name="batch_job_instance")
+@Table(name="BATCH_JOB_INSTANCE")
 public class BatchJobInstance {
 
 	@Id

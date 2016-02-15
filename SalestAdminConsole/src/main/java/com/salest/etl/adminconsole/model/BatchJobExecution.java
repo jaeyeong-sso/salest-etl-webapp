@@ -21,7 +21,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity
-@Table(name="batch_job_execution")
+@Table(name="BATCH_JOB_EXECUTION")
 public class BatchJobExecution {
 	
 	@Id

@@ -1,5 +1,6 @@
 package com.salest.etl.adminconsole.web;
  
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class DWManagementController {
 		hdfsService.reportHDFSClusterStatus();
 		
 		HashMap<String,String> hdfsClusterInfoMap = hdfsService.getHdfsClusterInfoMap();
-		HashMap<String,String> hdfsNodesInfoMap = hdfsService.getHdfsNodesInfoMap();
+		ArrayList<HashMap<String,String>>  hdfsNodesInfoMapArr = hdfsService.getHdfsNodesInfoMapArr();
 		
 		HdfsClusterInfo clusterInfoModel = new HdfsClusterInfo();
 		clusterInfoModel.setConfigured_capacity(hdfsClusterInfoMap.get(HDFSService.dfsadmin_configured_capacity_key));
@@ -57,14 +58,18 @@ public class DWManagementController {
 		clusterInfoModel.setDfs_used(hdfsClusterInfoMap.get(HDFSService.dfsadmin_dfs_used_key));
 		hdfsClusterInfoDAO.update(clusterInfoModel);
 		
-		HdfsNodesInfo nodesInfoModel = new HdfsNodesInfo();
-		nodesInfoModel.setName(hdfsNodesInfoMap.get(HDFSService.dfsadmin_name_key));
-		nodesInfoModel.setHostname(hdfsNodesInfoMap.get(HDFSService.dfsadmin_hostname_key));
-		nodesInfoModel.setDfs_used(hdfsNodesInfoMap.get(HDFSService.dfsadmin_dfs_used_key));
-		nodesInfoModel.setDfs_remaining(hdfsNodesInfoMap.get(HDFSService.dfsadmin_dfs_remaining_key));
-		nodesInfoModel.setDfs_remaining_percent(hdfsNodesInfoMap.get(HDFSService.dfsadmin_dfs_remaining_percent_key));
+		for(HashMap<String,String> hdfsNodeInfoMap : hdfsNodesInfoMapArr){
 			
-		hdfsNodesInfoDAO.update(nodesInfoModel);
+			HdfsNodesInfo nodesInfoModel = new HdfsNodesInfo();
+			
+			nodesInfoModel.setName(hdfsNodeInfoMap.get(HDFSService.dfsadmin_name_key));
+			nodesInfoModel.setHostname(hdfsNodeInfoMap.get(HDFSService.dfsadmin_hostname_key));
+			nodesInfoModel.setDfs_used(hdfsNodeInfoMap.get(HDFSService.dfsadmin_dfs_used_key));
+			nodesInfoModel.setDfs_remaining(hdfsNodeInfoMap.get(HDFSService.dfsadmin_dfs_remaining_key));
+			nodesInfoModel.setDfs_remaining_percent(hdfsNodeInfoMap.get(HDFSService.dfsadmin_dfs_remaining_percent_key));
+				
+			hdfsNodesInfoDAO.update(nodesInfoModel);	
+		}
 	}
 
 

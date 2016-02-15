@@ -17,7 +17,7 @@ import org.hibernate.annotations.FetchMode;
 import org.springframework.transaction.annotation.Transactional;
 
 @Entity
-@Table(name="batch_step_execution")
+@Table(name="BATCH_STEP_EXECUTION")
 public class BatchStepExecution {
 
 	@Id
