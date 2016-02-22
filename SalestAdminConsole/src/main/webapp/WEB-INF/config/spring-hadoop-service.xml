@@ -22,12 +22,11 @@
 <!--
 	<hdp:job-runner id="dailyTrAggJobRunner" pre-action="cleanup-script" job-ref="daily-tr-agg-job" run-at-startup="false"/>
 -->
-
 	<hdp:script id="cleanup-script" location="classpath:clean-files.groovy">
 		<hdp:property name="targetDir" value="${daily_tr_agg.output.path}"/>
 	</hdp:script>
 	
-	<hdp:script-tasklet id="cleanup-tasklet" scope="step">
+	<hdp:script-tasklet id="cleanup-tasklet" scope="step" >
 	   	<hdp:script location="classpath:clean-files.groovy">
 			<hdp:property name="targetDir" value="${daily_tr_agg.output.path}"/>
 		</hdp:script>
@@ -36,9 +35,10 @@
 	
 	<!-- job task -->
 	
-    <hdp:job-tasklet id="mrjob-tasklet" job-ref="daily-tr-agg-job" scope="step" />
+    <hdp:job-tasklet id="mrjob-tasklet" job-ref="daily-tr-agg-job" wait-for-completion="true" scope="step" />
 
-	<hdp:job id="daily-tr-agg-job"
+	<hdp:job id="daily-tr-agg-job" 
+		scope="step"
 		input-path="${daily_tr_agg.input.path}" output-path="${daily_tr_agg.output.path}"
 		mapper="com.salest.etl.adminconsole.mapreduce.TrReceiptDailyAggMapper"
 		reducer="com.salest.etl.adminconsole.mapreduce.TrReceiptDailyAggReducer" />

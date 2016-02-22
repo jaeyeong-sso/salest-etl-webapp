@@ -13,7 +13,7 @@ public interface HDFSService {
 	public static String DIR_PATH_PROCESSED_DATA = "/salest/processed_data";
 	
 	public static String FILE_PATH_TR_RECEIPT = "transaction_receipt";
-	
+	public static String FILE_PATH_MENUCODE_INFO = "menu_code_info";
 	
 	public static String dfsadmin_configured_capacity_key = "configured_capacity";
 	public static String dfsadmin_present_capacity_key = "present_capacity";
@@ -26,6 +26,8 @@ public interface HDFSService {
 	public static String dfsadmin_dfs_remaining_percent_key ="dfs_remaining%";
 	
 	public void appenToFileOnHDFS(InputStream fileInputStream, String apppendFileName);
+	public void storeToFileOnHDFS(InputStream fileInputStream, String apppendFileName);
+	
 	public void reportHDFSClusterStatus();
 	public HashMap<String,String> getHdfsClusterInfoMap();
 	public ArrayList<HashMap<String,String>> getHdfsNodesInfoMapArr();

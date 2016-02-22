@@ -12,8 +12,10 @@ import javax.ws.rs.core.Response;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.hadoop.mapreduce.JobRunner;
 import org.springframework.stereotype.Component;
 
 import com.salest.etl.adminconsole.dao.BatchJobExecutionDAO;
@@ -31,7 +33,6 @@ public class RawDataProcessService {
 
 	@Autowired
 	Job dailyAggBatchJob;
-	
 	
 	@Autowired
 	BatchJobExecutionDAO batchJobExecutionDAO;
@@ -51,10 +52,12 @@ public class RawDataProcessService {
 	public Response execAggTrData() {
 		
 		try {
-			JobExecution jobExe = jobLauncher.run(dailyAggBatchJob, new JobParameters());
+			
+			JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+		    jobParametersBuilder.addLong("run.id", System.currentTimeMillis());
+			JobExecution jobExe = jobLauncher.run(dailyAggBatchJob, jobParametersBuilder.toJobParameters());
 			
 			return Response.status(Response.Status.OK).build();
-
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

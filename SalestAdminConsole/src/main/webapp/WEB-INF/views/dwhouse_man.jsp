@@ -71,10 +71,11 @@
 	
 	<script>
 	    $(document).ready(function() {
-	        $('#uploadBtn').click(function() {
+	    	
+	        $('#uploadTrDataBtn').click(function() {
 
 	            var formData = new FormData();
-	            $.each($('#attachFile')[0].files, function(i, file) {          
+	            $.each($('#attachTrDataFile')[0].files, function(i, file) {          
 	            	formData.append('file', file);
 	            });
 	             
@@ -85,9 +86,30 @@
 	                data: formData,
 	                processData: false,
 	                success: function(data, textStatus, jqXHR) {
-	                	//alert('Success');
+	                	alert('Upload completed Successfully');
 	                }, error: function(jqXHR, textStatus, errorThrown) {
-	                	alert('Failed');
+	                	alert('Failed to upload');
+	                }
+	            });
+	        });
+	        
+	        $('#uploadMenuDataBtn').click(function() {
+
+	            var formData = new FormData();
+	            $.each($('#attachMenuDataFile')[0].files, function(i, file) {          
+	            	formData.append('file', file);
+	            });
+	             
+	            $.ajax({
+	                url: "/SalestAdminConsole/api/upload/menu_csv",
+	                type: 'POST',
+	                contentType: false,
+	                data: formData,
+	                processData: false,
+	                success: function(data, textStatus, jqXHR) {
+	                	alert('Upload completed Successfully');
+	                }, error: function(jqXHR, textStatus, errorThrown) {
+	                	alert('Failed to upload');
 	                }
 	            });
 	        });
@@ -121,36 +143,14 @@
 	        });
 	        
 	    });
-	    
-	    /*
-	    $(document).on('change', '.btn-file :file', function() {
-	    	  var input = $(this),
-	    	      numFiles = input.get(0).files ? input.get(0).files.length : 1,
-	    	      label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-	    	  input.trigger('fileselect', [numFiles, label]);
-	    });
-	    */
-
+	   
 	    $(document).ready( function() {
-	    	
-		    $("#attachFile").change(function(param) {
-		        $("#fileCaption").val($("#attachFile").val());
+		    $("#attachTrDataFile").change(function(param) {
+		        $("#fileCaptionTrData").val($("#attachTrDataFile").val());
 		    });
-		    
-		    /*
-	    	    $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
-	    	        
-	    	        var input = $(this).parents('.input-group').find(':text'),
-	    	            log = numFiles > 1 ? numFiles + ' files selected' : label;
-	    	        
-	    	        if( input.length ) {
-	    	            input.val(log);
-	    	        } else {
-	    	            if( log ) alert(log);
-	    	        }
-	    	        
-	    	    });
-		   	*/
+		    $("#attachMenuDataFile").change(function(param) {
+		        $("#fileCaptionMenuData").val($("#attachMenuDataFile").val());
+		    });
 	    });
 
     	function showProcessMsg(bShow, message){
@@ -339,7 +339,7 @@
                     <div class="panel panel-default">
                     
                         <div class="panel-heading">
-                            <i class="fa fa-upload fa-fw"></i> Upload CSV data file
+                            <i class="fa fa-upload fa-fw"></i> Upload Transaction CSV data file
 
                             <div class="pull-right">
 								<div class="btn-group">
@@ -363,12 +363,12 @@
 								<div class="input-group">
 									<span class="input-group-btn">
 										<span class="btn btn-primary btn-file">
-											Browse&hellip; <input type="file" id="attachFile" >
+											Browse&hellip; <input type="file" id="attachTrDataFile" >
 										</span>
 									</span>
-									<input type="text" id="fileCaption" class="form-control" readonly>
+									<input type="text" id="fileCaptionTrData" class="form-control" readonly>
 									<span class="input-group-btn">
-										<span id="uploadBtn" class="btn btn-primary btn-file">upload</span>
+										<span id="uploadTrDataBtn" class="btn btn-primary btn-file">upload</span>
 									</span>
 								</div>
 							</form>
@@ -428,6 +428,36 @@
             </div>
             <!-- /.row -->
             
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                
+                    <div class="panel panel-default">
+                    
+                        <div class="panel-heading">
+                            <i class="fa fa-upload fa-fw"></i> Upload Menu Data CSV file
+                        </div>
+                        
+						<div class="panel-body">
+							<form id="submitForm" enctype="multipart/form-data">
+								<div class="input-group">
+									<span class="input-group-btn">
+										<span class="btn btn-primary btn-file">
+											Browse&hellip; <input type="file" id="attachMenuDataFile" >
+										</span>
+									</span>
+									<input type="text" id="fileCaptionMenuData" class="form-control" readonly>
+									<span class="input-group-btn">
+										<span id="uploadMenuDataBtn" class="btn btn-primary btn-file">upload</span>
+									</span>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+							
+                            
         </div>
         <!-- /#page-wrapper -->
 

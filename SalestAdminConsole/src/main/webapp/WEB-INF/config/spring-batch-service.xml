@@ -25,7 +25,7 @@
 		<jdbc:script location="classpath:org/springframework/batch/core/schema-drop-mysql.sql" />
 		<jdbc:script location="classpath:org/springframework/batch/core/schema-mysql.sql" />
 	</jdbc:initialize-database>
- 	
+
 	<bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
 		<property name="jobRepository" ref="jobRepository"/>
 	</bean>
@@ -33,48 +33,50 @@
 	<bean class="org.springframework.batch.core.scope.StepScope">
         <property name="proxyTargetClass" value="true"/>
     </bean>
-  
-	<batch:job id="dailyAggBatchJob">
 	
-		<batch:step id="cleanup" next="mrjob">
+	
+	<!-- ===================================================================================== -->
+	<!-- = Transaction Data ETL process -->
+	<!-- ===================================================================================== -->
+	
+	<batch:job id="dailyAggBatchJob" restartable="true" >
+	
+		<batch:step id="CleanUpHDFS" next="MrJob">
 			<batch:tasklet ref="cleanup-tasklet" allow-start-if-complete="true"/>
 	    </batch:step>
 	    
-	    <batch:step id="mrjob" next="JdbcCleanUp">
-	      <batch:tasklet ref="mrjob-tasklet" allow-start-if-complete="true"/>
+	    <batch:step id="MrJob" next="CleanUpTable_daily_tr_summary">
+	      <batch:tasklet ref="mrjob-tasklet" allow-start-if-complete="true" />
 	    </batch:step>
-	    
-	    <batch:step id="JdbcCleanUp" next="loadToMySQL">
-	      <batch:tasklet ref="jdbcCleanUp" allow-start-if-complete="true"/>
+
+	    <batch:step id="CleanUpTable_daily_tr_summary" next="loadToDB_daily_tr_summary">
+	      <batch:tasklet ref="DBCleanUpTaskDailyTrSummary" allow-start-if-complete="true" />
 	    </batch:step>
-	    
-		<batch:step id="loadToMySQL">  
-			<batch:tasklet transaction-manager="transactionManager" allow-start-if-complete="true">  
-				<batch:chunk reader="hdfsReader" writer="databaseItemWriter" commit-interval="10"/>  
+	
+		<batch:step id="loadToDB_daily_tr_summary">  
+			<batch:tasklet transaction-manager="transactionManager" allow-start-if-complete="true" >  
+				<batch:chunk reader="TrDataHdfsFileReader" writer="TrDataDBItemWriter" commit-interval="20"/>  
 			</batch:tasklet>  
 		</batch:step> 
 
+		<!--
 	    <batch:listeners>
 	    	<batch:listener>
 	    		<bean class="com.salest.etl.adminconsole.batch.DailyTrSumJobExecutionListener"/>
 	    	</batch:listener>
 	    </batch:listeners>
-    
+    	-->
 	</batch:job>
 	
-			
-	<!-- Typical ETL process -->
+	
 	<bean id="DailyTrSummary" class="com.salest.etl.adminconsole.batch.model.DailyTrSummary" scope="prototype"></bean>  
 
-	<bean id="hdfsReader" class="org.springframework.batch.item.file.MultiResourceItemReader" scope="step" >
+	<bean id="TrDataHdfsFileReader" class="org.springframework.batch.item.file.MultiResourceItemReader" scope="step" >
 		<property name="resources" value="${hd.fs}${daily_tr_agg.output.path}/part-r-00000"/>
-		<property name="delegate" ref="cvsItemReader"/>
+		<property name="delegate" ref="TrDataCvsItemReader"/>
 	</bean>
 	
-	<bean id="cvsItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">  
-		<!--
-		<property name="resource" value="classpath:part-r-00000" />  
-		-->  
+	<bean id="TrDataCvsItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">   
 		<property name="lineMapper">  
 			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">  
 				<property name="lineTokenizer">  
@@ -92,7 +94,7 @@
 		</property>  
 	</bean>     
 
-	<bean id="databaseItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">  
+	<bean id="TrDataDBItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">  
 		<property name="dataSource" ref="dataSource" />  
 		<property name="sql">  
 			<value>  
@@ -107,7 +109,65 @@
   		</property>  
     </bean>  
     
-    <bean id="jdbcCleanUp" class="com.salest.etl.adminconsole.batch.JdbcCleanUp">
+    <bean id="DBCleanUpTaskDailyTrSummary" class="com.salest.etl.adminconsole.batch.DBCleanUpTaskDailyTrSummary">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	
+	<!-- ===================================================================================== -->
+	<!-- = Menu Data ETL process -->
+	<!-- ===================================================================================== -->
+
+	<batch:job id="menuDataETLBatchJob" restartable="true" >
+		<batch:step id="loadToDB_menu_code_info">  
+			<batch:tasklet transaction-manager="transactionManager" allow-start-if-complete="true" >  
+				<batch:chunk reader="MenuDataHdfsFileReader" writer="MenuDataDBItemWriter" commit-interval="10"/>  
+			</batch:tasklet>  
+		</batch:step> 
+	</batch:job>
+
+
+	<bean id="MenuCodeInfo" class="com.salest.etl.adminconsole.batch.model.MenuCodeInfo" scope="prototype"></bean>  
+	
+	<bean id="MenuDataHdfsFileReader" class="org.springframework.batch.item.file.MultiResourceItemReader" scope="step" >
+		<property name="resources" value="${hd.fs}${menu_code_info.path}"/>
+		<property name="delegate" ref="MenuDataCvsItemReader"/>
+	</bean>
+	
+	<bean id="MenuDataCvsItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">   
+		<property name="lineMapper">  
+			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">  
+				<property name="lineTokenizer">  
+					<bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">  
+						<property name="names" value="category, product_code, product_name, price" />
+						<property name="delimiter">
+						    <util:constant static-field="org.springframework.batch.item.file.transform.DelimitedLineTokenizer.DELIMITER_COMMA"/>
+						</property>
+					</bean>  
+				</property>  
+				<property name="fieldSetMapper">     
+					<bean class="com.salest.etl.adminconsole.batch.model.MenuCodeInfoFieldSetMapper" />  
+				</property>  
+			</bean>  
+		</property>  
+	</bean>  
+	
+	<bean id="MenuDataDBItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">  
+		<property name="dataSource" ref="dataSource" />  
+		<property name="sql">  
+			<value>  
+	            <![CDATA[         
+	              INSERT INTO menu_code_info(category, product_code, product_name, price) VALUES (:category, :product_code, :product_name, :price) 
+	             ]]>  
+			</value>  
+		</property>  
+ 		<!-- It will take care matching between object property and sql name parameter -->  
+ 		<property name="itemSqlParameterSourceProvider">  
+   			<bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />  
+  		</property>  
+    </bean>  
+    
+	<bean id="DBCleanUpTaskMenuCodeInfo" class="com.salest.etl.adminconsole.batch.DBCleanUpTaskMenuCodeInfo">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 

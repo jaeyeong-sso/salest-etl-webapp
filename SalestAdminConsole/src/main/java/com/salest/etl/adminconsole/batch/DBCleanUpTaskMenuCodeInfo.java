@@ -6,7 +6,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-public class JdbcCleanUp extends JdbcDaoSupport implements Tasklet{
+public class DBCleanUpTaskMenuCodeInfo extends JdbcDaoSupport implements Tasklet{
 
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		// TODO Auto-generated method stub
@@ -15,7 +15,7 @@ public class JdbcCleanUp extends JdbcDaoSupport implements Tasklet{
 	}
 	
 	private void cleanUpTable(){
-		String[] strSql = {"DELETE FROM daily_tr_summary"};
+		String[] strSql = {"DELETE FROM menu_code_info"};
 		getJdbcTemplate().batchUpdate(strSql);
 	}
 }

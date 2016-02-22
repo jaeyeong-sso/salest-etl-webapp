@@ -62,13 +62,13 @@ public class HDFSServiceImpl implements HDFSService {
 			if(hdfs==null)
 				return;
 	    	
-			org.apache.hadoop.fs.Path trReceiptFilePath
+			org.apache.hadoop.fs.Path hdfsFilePath
 						= new org.apache.hadoop.fs.Path(this.DIR_PATH_RAW_DATA + "/" + this.FILE_PATH_TR_RECEIPT);
 			BufferedWriter bufWriter = null;
-			if (hdfs.exists(trReceiptFilePath)) {
-				bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.append(trReceiptFilePath)));
+			if (hdfs.exists(hdfsFilePath)) {
+				bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.append(hdfsFilePath)));
 			} else {
-				bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.create(trReceiptFilePath, (short)2)));
+				bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.create(hdfsFilePath, (short)2)));
 			}
 			IOUtils.copy(fileInputStream, bufWriter);
 			bufWriter.close();
@@ -76,9 +76,31 @@ public class HDFSServiceImpl implements HDFSService {
 	    catch (IOException e){
 	      e.printStackTrace();
 	    }
-	 }
+	}
 	
-	 public void reportHDFSClusterStatus(){
+	public void storeToFileOnHDFS(InputStream fileInputStream, String apppendFileName) {
+	    
+		try {
+			if(hdfs==null)
+				return;
+	    	
+			org.apache.hadoop.fs.Path hdfsFilePath
+						= new org.apache.hadoop.fs.Path(this.DIR_PATH_RAW_DATA + "/" + this.FILE_PATH_MENUCODE_INFO);
+			BufferedWriter bufWriter = null;
+			if (hdfs.exists(hdfsFilePath)) {
+				hdfs.delete(hdfsFilePath, true);
+			} 
+			bufWriter = new BufferedWriter(new OutputStreamWriter(hdfs.create(hdfsFilePath, (short)2)));
+			
+			IOUtils.copy(fileInputStream, bufWriter);
+			bufWriter.close();
+	    }
+	    catch (IOException e){
+	      e.printStackTrace();
+	    }
+	}
+	
+	public void reportHDFSClusterStatus(){
 		 
 		 DFSAdmin dfsAdmin = new DFSAdmin(conf);
 		 String [] args =  new String[]{"Configured Capacity","Present Capacity","Name","DFS Remaining"};
@@ -102,9 +124,9 @@ public class HDFSServiceImpl implements HDFSService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	 }
+	}
 	 
-	 private void parseAndStoreReportResult(String strReportResult){
+	private void parseAndStoreReportResult(String strReportResult){
 		 
 		 String sections[] = strReportResult.split("-------------------------------------------------");
 		 
@@ -138,16 +160,16 @@ public class HDFSServiceImpl implements HDFSService {
 				}
 			 } 
 		 }
-	 }
+	}
 	 
-	 public HashMap<String,String> getHdfsClusterInfoMap(){
+	public HashMap<String,String> getHdfsClusterInfoMap(){
 		 return this.hdfsClusterInfoMap;
-	 }
-	 public ArrayList<HashMap<String,String>> getHdfsNodesInfoMapArr(){
+	}
+	public ArrayList<HashMap<String,String>> getHdfsNodesInfoMapArr(){
 		 return this.hdfsNodesInfoMapArr;
-	 }
+	}
 	 
-	 public List<HdfsFileListingInfo> doFileListing(){
+	public List<HdfsFileListingInfo> doFileListing(){
 		 
 		if(hdfs==null)
 			return null;
