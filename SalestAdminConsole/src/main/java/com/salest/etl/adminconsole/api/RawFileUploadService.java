@@ -85,7 +85,7 @@ public class RawFileUploadService {
 		
 		if (contentDispositionHeader.getFileName() != null){
 			
-			//hdfsService.storeToFileOnHDFS(fileInputStream, contentDispositionHeader.getFileName());
+			hdfsService.storeToFileOnHDFS(fileInputStream, contentDispositionHeader.getFileName());
 			
 			try {
 				JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();

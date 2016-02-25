@@ -45,19 +45,57 @@
 
 
 	<!-- tool-runner task -->
+
+	<!--  files="classpath:JoinTrReceiptMenuCodeToolRunner.jar"  -->
+	<hdp:tool-tasklet id="tool-tasklet" scope="step">
+		<hdp:tool>
+			<bean class="com.salest.etl.adminconsole.mapreduce.JoinTrReceiptMenuCodeToolRunner">
+				<constructor-arg ref="hadoopConfiguration" />
+			</bean>
+		</hdp:tool>
+	</hdp:tool-tasklet>
+	
+	<hdp:script-tasklet id="cleanup-join-tr-menu-path-tasklet" scope="step" >
+	   	<hdp:script location="classpath:clean-files.groovy">
+			<hdp:property name="targetDir" value="${join_tr_receipt_menu_code.output.path}"/>
+		</hdp:script>
+    </hdp:script-tasklet>
+    
+    
 	<!--
-    <hdp:tool-tasklet id="tool-tasklet" tool-ref="tool-runner" scope="step"/>
-	<hdp:tool-runner id="tool-runner" tool-class="com.salest.etl.adminconsole.mapreduce.TrReceiptDailyAggToolRunner" run-at-startup="false">
-		<hdp:arg value="${daily_tr_agg.input.path}" />
-		<hdp:arg value="${daily_tr_agg.output.path}"/>
-	</hdp:tool-runner>
+	<hdp:tool-tasklet id="tool-tasklet" scope="step" configuration-ref="hadoopConfiguration" 
+		tool-class="com.salest.etl.adminconsole.mapreduce.JoinTrReceiptMenuCodeToolRunner">
+		<hdp:arg value="/salest/raw_data/transaction_receipt"/>
+		<hdp:arg value="/salest/raw_data/menu_code_info"/>
+		<hdp:arg value="/salest/processed_data/transaction_receipt_with_menucode"/>
+	</hdp:tool-tasklet>
 	-->
 	
-	<hdp:script-tasklet id="setup-tasklet" scope="step">
-	   	<hdp:script location="classpath:setup-path.groovy">
-	   		<hdp:property name="targetDir" value="${daily_tr_agg.output.path}"/>
-	   	</hdp:script>
+	<!-- job task -->
+	
+    <hdp:job-tasklet id="agg-by-product-mrjob-tasklet" job-ref="agg-by-product-mrjob" wait-for-completion="true" scope="step" />
+
+	<hdp:job id="agg-by-product-mrjob" 
+		scope="step"
+		input-path="${join_tr_receipt_menu_code.output.path}/part-r-00000" output-path="${agg_by_product_mrjob.output.path}"
+		mapper="com.salest.etl.adminconsole.mapreduce.TrMonthlyAggByProductMapper"
+		reducer="com.salest.etl.adminconsole.mapreduce.TrMonthlyAggByProductReducer" />
+	
+	<hdp:script-tasklet id="cleanup-agg-by-product-mrjob-path-tasklet" scope="step" >
+	   	<hdp:script location="classpath:clean-files.groovy">
+			<hdp:property name="targetDir" value="${agg_by_product_mrjob.output.path}"/>
+		</hdp:script>
     </hdp:script-tasklet>
+	
+	<!--
+    <hdp:tool-tasklet id="tool-tasklet" tool-ref="joinToolRunner" scope="step"/>
+	
+	<hdp:tool-runner id="joinToolRunner" tool-class="com.salest.etl.adminconsole.mapreduce.JoinTrReceiptMenuCodeToolRunner" run-at-startup="false">
+		<hdp:arg value="/salest/raw_data/transaction_receipt" />
+		<hdp:arg value="/salest/raw_data/menu_code_info"/>
+		<hdp:arg value="/salest/processed_data/transaction_receipt_with_menucode"/>
+	</hdp:tool-runner>
+	-->
     
     <hdp:resource-loader id="hadoopResourceLoader" />	
 

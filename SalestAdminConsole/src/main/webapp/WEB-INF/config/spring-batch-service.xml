@@ -171,5 +171,80 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 
+
+	<!-- ===================================================================================== -->
+	<!-- = Join Transaction & MenuCode Data ETL process -->
+	<!-- ===================================================================================== -->
+	
+	<batch:job id="joinTrReceiptMenuCodeJob" restartable="true" >
+		
+		<batch:step id="PreJoinMrJobCleanUpHDFS" next="JoinMrJob">
+			<batch:tasklet ref="cleanup-join-tr-menu-path-tasklet" allow-start-if-complete="true"/>
+	    </batch:step>
+	
+	    <batch:step id="JoinMrJob" next="PreAggByProductMrJob">
+	      <batch:tasklet ref="tool-tasklet" allow-start-if-complete="true" />
+	    </batch:step>
+	    
+	    <batch:step id="PreAggByProductMrJob" next="AggByProductMrJob">
+			<batch:tasklet ref="cleanup-agg-by-product-mrjob-path-tasklet" allow-start-if-complete="true"/>
+	    </batch:step>
+	    
+	   	<batch:step id="AggByProductMrJob" next="loadToDB_daily_product_tr_summary">
+	      <batch:tasklet ref="agg-by-product-mrjob-tasklet" allow-start-if-complete="true" />
+	    </batch:step>
+	    
+	    <batch:step id="loadToDB_daily_product_tr_summary">  
+			<batch:tasklet transaction-manager="transactionManager" allow-start-if-complete="true" >  
+				<batch:chunk reader="DailyProductTrHdfsFileReader" writer="DailyProductTrDBItemWriter" commit-interval="100"/>  
+			</batch:tasklet>  
+		</batch:step> 
+	  
+	</batch:job>
+	
+	
+	<bean id="DailyProductTrSummary" class="com.salest.etl.adminconsole.batch.model.DailyProductTrSummary" scope="prototype"></bean>  
+	
+	<bean id="DailyProductTrHdfsFileReader" class="org.springframework.batch.item.file.MultiResourceItemReader" scope="step" >
+		<property name="resources" value="${hd.fs}${agg_by_product_mrjob.output.path}/part-r-00000"/>
+		<property name="delegate" ref="DailyProductTrItemReader"/>
+	</bean>
+	
+	<bean id="DailyProductTrItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">   
+		<property name="lineMapper">  
+			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">  
+				<property name="lineTokenizer">  
+					<bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">  
+						<property name="names" value="date,product_name,product_cate,num_of_product,total_amount" />
+						<property name="delimiter">
+						    <util:constant static-field="org.springframework.batch.item.file.transform.DelimitedLineTokenizer.DELIMITER_COMMA"/>
+						</property>
+					</bean>
+				</property>  
+				<property name="fieldSetMapper">     
+					<bean class="com.salest.etl.adminconsole.batch.model.DailyProductTrSummaryFieldSetMapper" />  
+				</property>  
+			</bean>  
+		</property>  
+	</bean>  
+	
+	<bean id="DailyProductTrDBItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">  
+		<property name="dataSource" ref="dataSource" />  
+		<property name="sql">  
+			<value>  
+	            <![CDATA[         
+	              INSERT INTO daily_product_tr_summary(date,product_name,product_cate,num_of_product,total_amount) VALUES (:date,:product_name,:product_cate,:num_of_product,:total_amount) 
+	             ]]>  
+			</value>  
+		</property>  
+ 		<!-- It will take care matching between object property and sql name parameter -->  
+ 		<property name="itemSqlParameterSourceProvider">  
+   			<bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />  
+  		</property>  
+    </bean>  
+    
+	<bean id="DBCleanUpTaskDailyProductTrInfo" class="com.salest.etl.adminconsole.batch.DBCleanUpTaskDailyProductTrSummary">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
 	
 </beans>

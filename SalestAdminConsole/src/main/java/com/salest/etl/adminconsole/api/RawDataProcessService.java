@@ -16,6 +16,7 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.hadoop.mapreduce.JobRunner;
+import org.springframework.data.hadoop.mapreduce.ToolRunner;
 import org.springframework.stereotype.Component;
 
 import com.salest.etl.adminconsole.dao.BatchJobExecutionDAO;
@@ -33,6 +34,10 @@ public class RawDataProcessService {
 
 	@Autowired
 	Job dailyAggBatchJob;
+	
+	@Autowired
+	Job joinTrReceiptMenuCodeJob;
+	
 	
 	@Autowired
 	BatchJobExecutionDAO batchJobExecutionDAO;
@@ -56,6 +61,26 @@ public class RawDataProcessService {
 			JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 		    jobParametersBuilder.addLong("run.id", System.currentTimeMillis());
 			JobExecution jobExe = jobLauncher.run(dailyAggBatchJob, jobParametersBuilder.toJobParameters());
+			
+			return Response.status(Response.Status.OK).build();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@POST
+	@Path("/join_tr_receipt_menucode")
+	public Response joinTrReceiptMenucode() {
+		
+		try {
+			
+			JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+		    jobParametersBuilder.addLong("run.id", System.currentTimeMillis());
+			JobExecution jobExe = jobLauncher.run(joinTrReceiptMenuCodeJob, jobParametersBuilder.toJobParameters());
 			
 			return Response.status(Response.Status.OK).build();
 			

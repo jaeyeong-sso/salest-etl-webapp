@@ -116,7 +116,8 @@
 	        
 	        $('#runTestBatchBtn').click(function() {
 	            $.ajax({
-	                url: "/SalestAdminConsole/api/rawdata/agg_tr_daily",
+	                // url: "/SalestAdminConsole/api/rawdata/agg_tr_daily",
+	                url: "/SalestAdminConsole/api/rawdata/join_tr_receipt_menucode",
 	                type: 'POST',
 	                contentType: false,
 	                processData: false,

@@ -14,6 +14,7 @@ public interface HDFSService {
 	
 	public static String FILE_PATH_TR_RECEIPT = "transaction_receipt";
 	public static String FILE_PATH_MENUCODE_INFO = "menu_code_info";
+	public static String FILE_PATH_OUTPUT_JOIN_TR_MENU = "tr_receipt_menu_code";
 	
 	public static String dfsadmin_configured_capacity_key = "configured_capacity";
 	public static String dfsadmin_present_capacity_key = "present_capacity";
