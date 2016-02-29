@@ -40,12 +40,12 @@ public class TimeBaseFirstStepAggReducer extends Reducer<Text,Text,Text,Text> {
 			}
 		}
 	
-		resultStr = "";
+		resultStr = key.toString();
 		for(long amountPerTime : listSalesAmountsPerTime){
-			resultStr += String.format("%d,", amountPerTime);
+			resultStr += String.format(",%d", amountPerTime);
 		}
 
-		result.set(resultStr.substring(0, (resultStr.length()-1)));
-		context.write(key, result);
+		result.set(resultStr);
+		context.write(null, result);
 	}
 }

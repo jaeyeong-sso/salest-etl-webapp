@@ -119,11 +119,17 @@
 	<!-- ===================================================================================== -->
 
 	<batch:job id="menuDataETLBatchJob" restartable="true" >
+		
+		<batch:step id="CleanUpTable_menu_code_info" next="loadToDB_menu_code_info">
+	      <batch:tasklet ref="DBCleanUpTaskMenuCodeInfo" allow-start-if-complete="true" />
+	    </batch:step>
+	    
 		<batch:step id="loadToDB_menu_code_info">  
 			<batch:tasklet transaction-manager="transactionManager" allow-start-if-complete="true" >  
 				<batch:chunk reader="MenuDataHdfsFileReader" writer="MenuDataDBItemWriter" commit-interval="10"/>  
 			</batch:tasklet>  
-		</batch:step> 
+		</batch:step>
+		
 	</batch:job>
 
 
@@ -190,8 +196,12 @@
 			<batch:tasklet ref="cleanup-agg-by-product-mrjob-path-tasklet" allow-start-if-complete="true"/>
 	    </batch:step>
 	    
-	   	<batch:step id="AggByProductMrJob" next="loadToDB_daily_product_tr_summary">
+	   	<batch:step id="AggByProductMrJob" next="CleanUpTable_daily_product_tr_summary">
 	      <batch:tasklet ref="agg-by-product-mrjob-tasklet" allow-start-if-complete="true" />
+	    </batch:step>
+	    
+	    <batch:step id="CleanUpTable_daily_product_tr_summary" next="loadToDB_daily_product_tr_summary">
+	      <batch:tasklet ref="DBCleanUpTaskDailyProductTrInfo" allow-start-if-complete="true" />
 	    </batch:step>
 	    
 	    <batch:step id="loadToDB_daily_product_tr_summary">  
@@ -253,12 +263,70 @@
 	<!-- ===================================================================================== -->
 
 	<batch:job id="timebaseDataETLBatchJob" restartable="true" >
+	
 		<batch:step id="PreTimebaseAggMrJobCleanUpHDFS" next="timebaseAggMrJob">
 			<batch:tasklet ref="cleanup-timebase-mrjob-path-tasklet" allow-start-if-complete="true"/>
 	    </batch:step>
-	    <batch:step id="timebaseAggMrJob">
+	    
+	    <batch:step id="timebaseAggMrJob" next="CleanUpTable_daily_timebase_agg">
 	      <batch:tasklet ref="timebase-mrjob-tasklet" allow-start-if-complete="true" />
 	    </batch:step>
+	    
+	    <batch:step id="CleanUpTable_daily_timebase_agg" next="loadToDB_daily_timebase_agg">
+	      <batch:tasklet ref="DBCleanUpTaskDailyTimeBaseAgg" allow-start-if-complete="true" />
+	    </batch:step>
+	    
+	    <batch:step id="loadToDB_daily_timebase_agg">  
+			<batch:tasklet transaction-manager="transactionManager" allow-start-if-complete="true" >  
+				<batch:chunk reader="DailyTimeBaseAggHdfsFileReader" writer="DailyTimeBaseAggDBItemWriter" commit-interval="30"/>  
+			</batch:tasklet>  
+		</batch:step> 
+		
 	</batch:job>
+	
+	
+	<bean id="DailyTimeBaseAgg" class="com.salest.etl.adminconsole.batch.model.DailyTimeBaseAgg" scope="prototype"></bean>  
+	
+	<bean id="DailyTimeBaseAggHdfsFileReader" class="org.springframework.batch.item.file.MultiResourceItemReader" scope="step" >
+		<property name="resources" value="${hd.fs}${agg_by_timebase_mrjob.output.path}/part-r-00000"/>
+		<property name="delegate" ref="DailyTimeBaseAggItemReader"/>
+	</bean>
+	
+	<bean id="DailyTimeBaseAggItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">   
+		<property name="lineMapper">  
+			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">  
+				<property name="lineTokenizer">  
+					<bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">  
+						<property name="names" value="date,H10,H11,H12,H13,H14,H15,H16,H17,H18,H19,H20,H21,H22,H23" />
+						<property name="delimiter">
+						    <util:constant static-field="org.springframework.batch.item.file.transform.DelimitedLineTokenizer.DELIMITER_COMMA"/>
+						</property>
+					</bean>
+				</property>  
+				<property name="fieldSetMapper">     
+					<bean class="com.salest.etl.adminconsole.batch.model.DailyTimeBaseAggFieldSetMapper" />  
+				</property>  
+			</bean>  
+		</property>  
+	</bean>
+	
+	<bean id="DailyTimeBaseAggDBItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">  
+		<property name="dataSource" ref="dataSource" />  
+		<property name="sql">  
+			<value>  
+	            <![CDATA[         
+	              INSERT INTO daily_timebase_agg(date,H10,H11,H12,H13,H14,H15,H16,H17,H18,H19,H20,H21,H22,H23) VALUES (:date,:H10,:H11,:H12,:H13,:H14,:H15,:H16,:H17,:H18,:H19,:H20,:H21,:H22,:H23) 
+	             ]]>  
+			</value>  
+		</property>  
+ 		<!-- It will take care matching between object property and sql name parameter -->  
+ 		<property name="itemSqlParameterSourceProvider">  
+   			<bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />  
+  		</property>  
+    </bean>
+    
+    <bean id="DBCleanUpTaskDailyTimeBaseAgg" class="com.salest.etl.adminconsole.batch.DBCleanUpTaskDailyTimeBaseAgg">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
 	
 </beans>
