@@ -247,4 +247,18 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
+		
+	<!-- ===================================================================================== -->
+	<!-- = TimeBase Aggregation ETL process -->
+	<!-- ===================================================================================== -->
+
+	<batch:job id="timebaseDataETLBatchJob" restartable="true" >
+		<batch:step id="PreTimebaseAggMrJobCleanUpHDFS" next="timebaseAggMrJob">
+			<batch:tasklet ref="cleanup-timebase-mrjob-path-tasklet" allow-start-if-complete="true"/>
+	    </batch:step>
+	    <batch:step id="timebaseAggMrJob">
+	      <batch:tasklet ref="timebase-mrjob-tasklet" allow-start-if-complete="true" />
+	    </batch:step>
+	</batch:job>
+	
 </beans>

@@ -87,15 +87,25 @@
 		</hdp:script>
     </hdp:script-tasklet>
 	
-	<!--
-    <hdp:tool-tasklet id="tool-tasklet" tool-ref="joinToolRunner" scope="step"/>
 	
-	<hdp:tool-runner id="joinToolRunner" tool-class="com.salest.etl.adminconsole.mapreduce.JoinTrReceiptMenuCodeToolRunner" run-at-startup="false">
-		<hdp:arg value="/salest/raw_data/transaction_receipt" />
-		<hdp:arg value="/salest/raw_data/menu_code_info"/>
-		<hdp:arg value="/salest/processed_data/transaction_receipt_with_menucode"/>
-	</hdp:tool-runner>
-	-->
+	<!-- TimeBase aggregation MapReduce Job -->
+	
+    <hdp:job-tasklet id="timebase-mrjob-tasklet" job-ref="timebase-first-step-mrjob" wait-for-completion="true" scope="step" />
+
+	<hdp:job id="timebase-first-step-mrjob" 
+		scope="step"
+		input-path="${daily_tr_agg.input.path}" output-path="${agg_by_timebase_mrjob.output.path}"
+		mapper="com.salest.etl.adminconsole.mapreduce.TimeBaseFirstStepAggMapper"
+		reducer="com.salest.etl.adminconsole.mapreduce.TimeBaseFirstStepAggReducer"
+	/>
+	
+	<hdp:script-tasklet id="cleanup-timebase-mrjob-path-tasklet" scope="step" >
+	   	<hdp:script location="classpath:clean-files.groovy">
+			<hdp:property name="targetDir" value="${agg_by_timebase_mrjob.output.path}"/>
+		</hdp:script>
+    </hdp:script-tasklet>
+    
+    
     
     <hdp:resource-loader id="hadoopResourceLoader" />	
 

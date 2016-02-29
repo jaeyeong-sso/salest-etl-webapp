@@ -38,6 +38,8 @@ public class RawDataProcessService {
 	@Autowired
 	Job joinTrReceiptMenuCodeJob;
 	
+	@Autowired
+	Job timebaseDataETLBatchJob;
 	
 	@Autowired
 	BatchJobExecutionDAO batchJobExecutionDAO;
@@ -60,8 +62,8 @@ public class RawDataProcessService {
 			
 			JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 		    jobParametersBuilder.addLong("run.id", System.currentTimeMillis());
-			JobExecution jobExe = jobLauncher.run(dailyAggBatchJob, jobParametersBuilder.toJobParameters());
-			
+		    JobExecution jobExe = jobLauncher.run(dailyAggBatchJob, jobParametersBuilder.toJobParameters());
+
 			return Response.status(Response.Status.OK).build();
 			
 		} catch (Exception e) {
@@ -80,7 +82,8 @@ public class RawDataProcessService {
 			
 			JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 		    jobParametersBuilder.addLong("run.id", System.currentTimeMillis());
-			JobExecution jobExe = jobLauncher.run(joinTrReceiptMenuCodeJob, jobParametersBuilder.toJobParameters());
+			//JobExecution jobExe = jobLauncher.run(joinTrReceiptMenuCodeJob, jobParametersBuilder.toJobParameters());
+			JobExecution jobExe = jobLauncher.run(timebaseDataETLBatchJob, jobParametersBuilder.toJobParameters());
 			
 			return Response.status(Response.Status.OK).build();
 			
