@@ -114,17 +114,16 @@
 	            });
 	        });
 	        
-	        $('#runTestBatchBtn').click(function() {
+	        $('#runBatchJobManuallyBtn').click(function() {
 	            $.ajax({
-	                // url: "/SalestAdminConsole/api/rawdata/agg_tr_daily",
-	                url: "/SalestAdminConsole/api/rawdata/join_tr_receipt_menucode",
+	                url: "/SalestAdminConsole/api/rawdata/run_all_etl_batchjob",
 	                type: 'POST',
 	                contentType: false,
 	                processData: false,
 	                success: function(data, textStatus, jqXHR) {
-	                		//alert('ajax ok');
+	                		alert('Start to Run Successfully');
 		                }, error: function(jqXHR, textStatus, errorThrown) {
-		                	alert('ajax failed');
+		                	alert('Failed to Run');
 		                }
 	            });
 	        });
@@ -227,21 +226,6 @@
             </div>
             <!-- /.navbar-header -->
 
-            <ul class="nav navbar-top-links navbar-right">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-messages">
-						<li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
-						<li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a></li>
-						<li class="divider"></li>
-						<li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
-					</ul>
-				</li>
-            </ul>
-            <!-- /.navbar-top-links -->
-
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
@@ -341,21 +325,6 @@
                     
                         <div class="panel-heading">
                             <i class="fa fa-upload fa-fw"></i> Upload Transaction CSV data file
-
-                            <div class="pull-right">
-								<div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                        Actions<span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right" role="menu">
-	                                        <li><a href="javascript:ajaxCSRFPost()">Action</a></li>
-	                                        <li><a href="#">Another action</a></li>
-	                                        <li><a href="#">Something else here</a></li>
-	                                        <li class="divider"></li>
-	                                        <li><a href="#">Separated link</a></li>
-	                                </ul>
-								</div>
-                            </div>
                         </div>
                         
 						<div class="panel-body">
@@ -373,37 +342,7 @@
 									</span>
 								</div>
 							</form>
-							
-							</p>
-							
-							<div class="panel panel-default">
-                        		<div class="panel-heading"> Important Files info. </div>
-								<div class="panel-body">
- 									<div class="table-responsive">
-										<table class="table table-striped table-bordered table-hover">
-		                                    <thead>
-		                                        <tr>
-		                                            <th>File Path</th>
-		                                            <th>File Size</th>
-		                                            <th>Update Time</th>
-		                                        </tr>
-		                                    </thead>
-		                                    <tbody>
-		                                    	<c:if test="${not empty hdfsFilesInfoList}">
-													<c:forEach var="FileInfo" items="${hdfsFilesInfoList}">
-		                                        	<tr>
-		                                            	<td>${FileInfo.filePath}</td>
-		                                            	<td>${FileInfo.fileSize}</td>
-		                                            	<td>${FileInfo.updateDate}</td>
-		                                        	</tr>
-		                                        	</c:forEach>
-		                                        </c:if>
-		                                    </tbody>
-										</table>
-									</div>
-								</div>
-							</div>
-	
+		
 						</div>
 
                     </div>
@@ -411,25 +350,7 @@
 
             </div>
             <!-- /.row -->
-            
-            <!-- /.row -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-upload fa-fw"></i> Run Batch Job independently(Aggregate Daily Receipt Transaction)
-                        </div>
-                        <!-- /.panel-heading -->
-						<div class="panel-body">
-							<button id="runTestBatchBtn" type="button" class="btn btn-primary">Run it!</button>
-						</div>
-                        <!-- /.panel-body -->
-                    </div>
-                </div>
-            </div>
-            <!-- /.row -->
-            
-            <!-- /.row -->
+
             <div class="row">
                 <div class="col-lg-12">
                 
@@ -457,8 +378,61 @@
 					</div>
 				</div>
 			</div>
-							
-                            
+						
+            <!-- /.row -->
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-flash fa-fw"></i> Run all Batch Job manually
+                        </div>
+                        <!-- /.panel-heading -->
+						<div class="panel-body">
+							<button id="runBatchJobManuallyBtn" type="button" class="btn btn-primary">Run!</button>
+						</div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            
+            <div class="row">
+                <div class="col-lg-12">
+					<div class="panel panel-default">
+                        <div class="panel-heading"> 
+                        	<i class="fa fa-file-text-o fa-fw"></i> HDFS Important Files info.
+                        </div>
+						<div class="panel-body">
+ 							<div class="table-responsive">
+								<table class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<th>File Path</th>
+											<th>File Size</th>
+											<th>Update Time</th>
+										</tr>
+									</thead>
+									<tbody>
+										<c:if test="${not empty hdfsFilesInfoList}">
+											<c:forEach var="FileInfo" items="${hdfsFilesInfoList}">
+												<tr>
+													<td>${FileInfo.filePath}</td>
+													<td>${FileInfo.fileSize}</td>
+													<td>${FileInfo.updateDate}</td>
+												</tr>
+											</c:forEach>
+										</c:if>
+									</tbody>
+								</table>
+							</div>
+						</div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+	            
         </div>
         <!-- /#page-wrapper -->
 

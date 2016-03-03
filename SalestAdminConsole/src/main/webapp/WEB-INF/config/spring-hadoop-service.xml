@@ -35,7 +35,7 @@
 	
 	<!-- job task -->
 	
-    <hdp:job-tasklet id="mrjob-tasklet" job-ref="daily-tr-agg-job" wait-for-completion="true" scope="step" />
+    <hdp:job-tasklet id="mrjob-tasklet" job-ref="daily-tr-agg-job" wait-for-completion="false" scope="step" />
 
 	<hdp:job id="daily-tr-agg-job" 
 		scope="step"
@@ -73,7 +73,7 @@
 	
 	<!-- job task -->
 	
-    <hdp:job-tasklet id="agg-by-product-mrjob-tasklet" job-ref="agg-by-product-mrjob" wait-for-completion="true" scope="step" />
+    <hdp:job-tasklet id="agg-by-product-mrjob-tasklet" job-ref="agg-by-product-mrjob" wait-for-completion="false" scope="step" />
 
 	<hdp:job id="agg-by-product-mrjob" 
 		scope="step"
@@ -90,7 +90,7 @@
 	
 	<!-- TimeBase aggregation MapReduce Job -->
 	
-    <hdp:job-tasklet id="timebase-mrjob-tasklet" job-ref="timebase-first-step-mrjob" wait-for-completion="true" scope="step" />
+    <hdp:job-tasklet id="timebase-mrjob-tasklet" job-ref="timebase-first-step-mrjob" wait-for-completion="false" scope="step" />
 
 	<hdp:job id="timebase-first-step-mrjob" 
 		scope="step"

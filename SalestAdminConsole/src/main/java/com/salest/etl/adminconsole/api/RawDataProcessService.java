@@ -36,6 +36,9 @@ public class RawDataProcessService {
 	Job dailyAggBatchJob;
 	
 	@Autowired
+	Job MenuCodeInfo;
+	
+	@Autowired
 	Job joinTrReceiptMenuCodeJob;
 	
 	@Autowired
@@ -47,43 +50,18 @@ public class RawDataProcessService {
 	@Autowired
 	HDFSService hdfsService;
 	
-	@GET
-	@Path("/agg_tr_daily")
-	public Response test() {
-		
-		return Response.status(Response.Status.OK).entity("TEST OK").build();
-	}
-	
-	@POST
-	@Path("/agg_tr_daily")
+	@Path("/run_all_etl_batchjob")
 	public Response execAggTrData() {
 		
 		try {
 			
 			JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 		    jobParametersBuilder.addLong("run.id", System.currentTimeMillis());
+		    
 		    JobExecution jobExe = jobLauncher.run(dailyAggBatchJob, jobParametersBuilder.toJobParameters());
-
-			return Response.status(Response.Status.OK).build();
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-	}
-	
-	@POST
-	@Path("/join_tr_receipt_menucode")
-	public Response joinTrReceiptMenucode() {
-		
-		try {
-			
-			JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
-		    jobParametersBuilder.addLong("run.id", System.currentTimeMillis());
-			//JobExecution jobExe = jobLauncher.run(joinTrReceiptMenuCodeJob, jobParametersBuilder.toJobParameters());
-			JobExecution jobExe = jobLauncher.run(timebaseDataETLBatchJob, jobParametersBuilder.toJobParameters());
+		    jobExe = jobLauncher.run(MenuCodeInfo, jobParametersBuilder.toJobParameters());
+		    jobExe = jobLauncher.run(joinTrReceiptMenuCodeJob, jobParametersBuilder.toJobParameters());
+		    jobExe = jobLauncher.run(timebaseDataETLBatchJob, jobParametersBuilder.toJobParameters());
 			
 			return Response.status(Response.Status.OK).build();
 			
@@ -94,7 +72,6 @@ public class RawDataProcessService {
 
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 	}
-	
 	
 	@POST
 	@Path("/print_result")

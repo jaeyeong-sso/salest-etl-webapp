@@ -47,8 +47,7 @@ public class RawFileUploadService {
 		if (contentDispositionHeader.getFileName() != null){
 			
 			hdfsService.appenToFileOnHDFS(fileInputStream, contentDispositionHeader.getFileName());
-
-			return Response.status(Response.Status.OK).build();
+			Response.status(Response.Status.OK).build();
 			
 			/*
 			try {
@@ -87,6 +86,7 @@ public class RawFileUploadService {
 			
 			hdfsService.storeToFileOnHDFS(fileInputStream, contentDispositionHeader.getFileName());
 			
+			/*
 			try {
 				JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 			    jobParametersBuilder.addLong("run.id", System.currentTimeMillis());
@@ -107,6 +107,7 @@ public class RawFileUploadService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 			
 			return Response.status(Response.Status.OK).build();
 		}
