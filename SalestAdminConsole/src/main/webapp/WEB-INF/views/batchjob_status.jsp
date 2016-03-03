@@ -85,10 +85,11 @@
                             	<c:if test="${not empty batchJobs}">
 									<c:forEach var="batchJob" items="${batchJobs}">
 						
+			
 	                                <div class="panel panel-default">
 	                                    <div class="panel-heading">
 	                                        <h4 class="panel-title">
-	                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+	                                            <a data-toggle="collapse" data-parent="#accordion" href="#<c:out value="${batchJob.batchJobInstance.getJob_name()}"/>"}>
 	                                            	<span><i class="glyphicon glyphicon-tasks"></i>&nbsp;&nbsp;${batchJob.batchJobInstance.getJob_name()}</span>
 													<span class="pull-right text-muted small"><em>End Time : ${batchJob.getEnd_time().toString()}</em></span>
 													<span class="pull-right text-muted small"><em>&nbsp;|&nbsp;</em></span>
@@ -98,13 +99,13 @@
 	                                            </a>
 	                                        </h4>
 	                                    </div>
-	                                    <div id="collapseOne" class="panel-collapse collapse in">
+	                                    <div id=${batchJob.batchJobInstance.getJob_name()} class="panel-collapse collapse in">
 	                                        <div class="panel-body">
 	                                        	<div class="list-group">
 													<c:if test="${not empty batchJob.batchStepExecutions}">
 													<c:forEach var="stepJob" items="${batchJob.getBatchStepExecutions()}">
 								
-														<a href="javascript:;" onclick="alert('ok');" class="list-group-item">
+														<a href="#" class="list-group-item">
 																
 																<i class="glyphicon glyphicon-ok"></i>&nbsp;&nbsp;${stepJob.getStep_name()}
 

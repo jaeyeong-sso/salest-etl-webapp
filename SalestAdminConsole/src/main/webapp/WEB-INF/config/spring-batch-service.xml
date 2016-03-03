@@ -25,10 +25,14 @@
 		<jdbc:script location="classpath:org/springframework/batch/core/schema-drop-mysql.sql" />
 		<jdbc:script location="classpath:org/springframework/batch/core/schema-mysql.sql" />
 	</jdbc:initialize-database>
-
+	
 	<bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
-		<property name="jobRepository" ref="jobRepository"/>
+    	<property name="jobRepository" ref="jobRepository" />
+    	<property name="taskExecutor">
+        	<bean class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
+    	</property>
 	</bean>
+
 
 	<bean class="org.springframework.batch.core.scope.StepScope">
         <property name="proxyTargetClass" value="true"/>
@@ -129,7 +133,7 @@
 				<batch:chunk reader="MenuDataHdfsFileReader" writer="MenuDataDBItemWriter" commit-interval="10"/>  
 			</batch:tasklet>  
 		</batch:step>
-		
+	
 	</batch:job>
 
 
@@ -199,17 +203,17 @@
 	   	<batch:step id="AggByProductMrJob" next="CleanUpTable_daily_product_tr_summary">
 	      <batch:tasklet ref="agg-by-product-mrjob-tasklet" allow-start-if-complete="true" />
 	    </batch:step>
-	    
+
 	    <batch:step id="CleanUpTable_daily_product_tr_summary" next="loadToDB_daily_product_tr_summary">
 	      <batch:tasklet ref="DBCleanUpTaskDailyProductTrInfo" allow-start-if-complete="true" />
 	    </batch:step>
 	    
 	    <batch:step id="loadToDB_daily_product_tr_summary">  
 			<batch:tasklet transaction-manager="transactionManager" allow-start-if-complete="true" >  
-				<batch:chunk reader="DailyProductTrHdfsFileReader" writer="DailyProductTrDBItemWriter" commit-interval="100"/>  
+				<batch:chunk reader="DailyProductTrHdfsFileReader" writer="DailyProductTrDBItemWriter" commit-interval="500"/>  
 			</batch:tasklet>  
 		</batch:step> 
-	  
+
 	</batch:job>
 	
 	
@@ -271,7 +275,7 @@
 	    <batch:step id="timebaseAggMrJob" next="CleanUpTable_daily_timebase_agg">
 	      <batch:tasklet ref="timebase-mrjob-tasklet" allow-start-if-complete="true" />
 	    </batch:step>
-	    
+
 	    <batch:step id="CleanUpTable_daily_timebase_agg" next="loadToDB_daily_timebase_agg">
 	      <batch:tasklet ref="DBCleanUpTaskDailyTimeBaseAgg" allow-start-if-complete="true" />
 	    </batch:step>
@@ -281,7 +285,7 @@
 				<batch:chunk reader="DailyTimeBaseAggHdfsFileReader" writer="DailyTimeBaseAggDBItemWriter" commit-interval="30"/>  
 			</batch:tasklet>  
 		</batch:step> 
-		
+
 	</batch:job>
 	
 	

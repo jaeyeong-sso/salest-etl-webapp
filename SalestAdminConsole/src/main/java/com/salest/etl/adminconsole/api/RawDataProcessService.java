@@ -13,7 +13,11 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.hadoop.mapreduce.JobRunner;
 import org.springframework.data.hadoop.mapreduce.ToolRunner;
@@ -36,7 +40,7 @@ public class RawDataProcessService {
 	Job dailyAggBatchJob;
 	
 	@Autowired
-	Job MenuCodeInfo;
+	Job menuDataETLBatchJob;
 	
 	@Autowired
 	Job joinTrReceiptMenuCodeJob;
@@ -53,24 +57,32 @@ public class RawDataProcessService {
 	@Path("/run_all_etl_batchjob")
 	public Response execAggTrData() {
 		
-		try {
-			
 			JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 		    jobParametersBuilder.addLong("run.id", System.currentTimeMillis());
 		    
-		    JobExecution jobExe = jobLauncher.run(dailyAggBatchJob, jobParametersBuilder.toJobParameters());
-		    jobExe = jobLauncher.run(MenuCodeInfo, jobParametersBuilder.toJobParameters());
-		    jobExe = jobLauncher.run(joinTrReceiptMenuCodeJob, jobParametersBuilder.toJobParameters());
-		    jobExe = jobLauncher.run(timebaseDataETLBatchJob, jobParametersBuilder.toJobParameters());
+		    try {
+				jobLauncher.run(dailyAggBatchJob, jobParametersBuilder.toJobParameters());
+			    jobLauncher.run(menuDataETLBatchJob, jobParametersBuilder.toJobParameters());
+			    jobLauncher.run(joinTrReceiptMenuCodeJob, jobParametersBuilder.toJobParameters());
+			    jobLauncher.run(timebaseDataETLBatchJob, jobParametersBuilder.toJobParameters());
+			    
+			    return Response.status(Response.Status.OK).build();
+			    
+			} catch (JobExecutionAlreadyRunningException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JobRestartException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JobInstanceAlreadyCompleteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JobParametersInvalidException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			return Response.status(Response.Status.OK).build();
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 	}
 	
 	@POST

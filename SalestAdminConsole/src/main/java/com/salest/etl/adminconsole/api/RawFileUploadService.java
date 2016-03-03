@@ -86,6 +86,7 @@ public class RawFileUploadService {
 			
 			hdfsService.storeToFileOnHDFS(fileInputStream, contentDispositionHeader.getFileName());
 			
+			return Response.status(Response.Status.OK).build();
 			/*
 			try {
 				JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
@@ -108,8 +109,6 @@ public class RawFileUploadService {
 				e.printStackTrace();
 			}
 			*/
-			
-			return Response.status(Response.Status.OK).build();
 		}
 		
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

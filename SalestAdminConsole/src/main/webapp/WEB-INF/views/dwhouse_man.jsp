@@ -121,10 +121,10 @@
 	                contentType: false,
 	                processData: false,
 	                success: function(data, textStatus, jqXHR) {
-	                		alert('Start to Run Successfully');
-		                }, error: function(jqXHR, textStatus, errorThrown) {
-		                	alert('Failed to Run');
-		                }
+	                	alert('Start to Run Successfully');
+		            }, error: function(jqXHR, textStatus, errorThrown) {
+		                alert('Failed to Run');
+		            }
 	            });
 	        });
 	        
